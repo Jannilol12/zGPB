@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'xyz.rxzt'
+version '1.0'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    compile 'net.dv8tion:JDA:4.2.0_229'
+    compile 'org.xerial:sqlite-jdbc:3.34.0'
+}
+
+test {
+    useJUnitPlatform()
+}
