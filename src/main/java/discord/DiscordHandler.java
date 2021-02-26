@@ -21,4 +21,8 @@ public class DiscordHandler {
         }
     }
 
+    public JDA getLocalJDA() {
+        return localJDA;
+    }
+
 }

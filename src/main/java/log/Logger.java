@@ -8,6 +8,11 @@ public final class Logger {
         System.out.println("[DEBUG, " + Instant.now().toString() + "] " + msg);
     }
 
+    public static void logException(String msg, Exception e) {
+        System.err.println("[ERROR, " + Instant.now().toString() + "] " + msg);
+        e.printStackTrace();
+    }
+
     public static void logException(Exception e) {
         e.printStackTrace();
     }
