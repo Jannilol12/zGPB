@@ -21,3 +21,16 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+
+jar {
+    manifest {
+        attributes "Main-Class": "JADB"
+    }
+
+    from {
+        (configurations.compile.findAll { !it.path.endsWith(".pom") }).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
