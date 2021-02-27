@@ -11,18 +11,13 @@ import java.util.StringJoiner;
 public class InfoCommand extends Command {
 
     public InfoCommand() {
-        super("info", "info <guild|author>", "retrieves info", 1);
+        super("info", "info", "retrieves info", 0);
     }
 
     @Override
     protected void onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
 
         if (mre.isFromGuild()) {
-            if (!super.isSyntaxCorrect(givenCommand)) {
-                mre.getChannel().sendMessage(getUsage()).queue();
-                return;
-            }
-
             Guild g = mre.getGuild();
             for (Role r : g.getRoles()) {
                 StringJoiner out = new StringJoiner(System.lineSeparator());

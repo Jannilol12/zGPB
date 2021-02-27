@@ -35,8 +35,7 @@ public class JADB {
         databaseHandler.initiateDatabase();
         discordHandler.createConnection();
 
-        new Thread(consoleHandler::checkInput);
-
+        consoleHandler.checkInput();
     }
 
     private void shutdown() {
