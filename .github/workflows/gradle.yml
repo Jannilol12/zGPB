@@ -1,4 +1,4 @@
-name: CI Gradle buuld
+name: CI Gradle build
 
 on:
   push:
