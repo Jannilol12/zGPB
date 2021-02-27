@@ -28,15 +28,12 @@ public abstract class Command {
 
     protected void onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
         if (!isSyntaxCorrect(givenCommand)) {
-            System.out.println(usage);
-            return;
+            mre.getMessage().reply("Wrong usage: " + usage).mentionRepliedUser(false).queue();
         }
     }
 
     private HashSet<String> createAliasSetFromString(String... alias) {
-        HashSet<String> aliasCrate = new HashSet<>();
-        aliasCrate.addAll(Arrays.asList(alias));
-        return aliasCrate;
+        return new HashSet<>(Arrays.asList(alias));
     }
 
     protected boolean isSyntaxCorrect(String command) {

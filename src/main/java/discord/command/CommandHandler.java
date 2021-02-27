@@ -1,5 +1,6 @@
 package discord.command;
 
+import discord.command.commands.DirectCommand;
 import discord.command.commands.InfoCommand;
 import discord.command.commands.StatusCommand;
 import log.Logger;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 public class CommandHandler {
 
     private final HashSet<Command> commands;
+    // TODO: Add configuration management
     private final char PREFIX = '+';
 
     public CommandHandler() {
@@ -20,6 +22,7 @@ public class CommandHandler {
     private void registerCommands() {
         commands.add(new StatusCommand());
         commands.add(new InfoCommand());
+        commands.add(new DirectCommand());
 
         Logger.logDebugMessage("Registererd " + commands.size() + " commands");
     }

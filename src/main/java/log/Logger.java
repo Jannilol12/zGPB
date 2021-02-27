@@ -13,6 +13,10 @@ public final class Logger {
         e.printStackTrace();
     }
 
+    public static void logException(String msg) {
+        System.err.println("[ERROR, " + Instant.now().toString() + "] " + msg);
+    }
+
     public static void logException(Exception e) {
         e.printStackTrace();
     }
