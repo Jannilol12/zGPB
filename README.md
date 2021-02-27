@@ -1,2 +1,2 @@
 # jadb
-just another discord bot
+this will maybe be a discord bot, who knows?
