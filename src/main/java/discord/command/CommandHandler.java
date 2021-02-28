@@ -29,11 +29,8 @@ public class CommandHandler {
 
     public void handleMessage(MessageReceivedEvent mre) {
         String msg = mre.getMessage().getContentRaw();
-        char localPrefix = msg.charAt(0);
 
-        if ((mre.isFromGuild() && localPrefix != JADB.INSTANCE.configurationHandler.getConfigCharValueForGuildByEvent(mre, "prefix")))
-            return;
-        else if (localPrefix != PREFIX)
+        if (!isValidPrefix(msg.charAt(0), mre))
             return;
 
         msg = msg.substring(1);
@@ -44,6 +41,12 @@ public class CommandHandler {
                 break;
             }
         }
+    }
+
+    private boolean isValidPrefix(char localPrefix, MessageReceivedEvent mre) {
+        if (mre.isFromGuild())
+            return localPrefix == JADB.INSTANCE.configurationHandler.getConfigCharValueForGuildByEvent(mre, "prefix");
+        return localPrefix == PREFIX;
     }
 
 }

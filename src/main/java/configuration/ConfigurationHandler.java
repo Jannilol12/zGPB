@@ -37,9 +37,9 @@ public class ConfigurationHandler {
         guildPropertyMap = new HashMap<>();
 
         try {
-            Files.list(configFolder).filter(path -> path.endsWith(".config")).
+            Files.list(configFolder).filter(path -> path.toString().endsWith(".config")).
                     forEach(configFile -> guildPropertyMap.put(getIDFromFileName(configFile), loadPropertiesFromPath(configFile)));
-        } catch (IOException e) {
+        } catch (Exception e) {
             Logger.logException("Couldn't list files", e);
         }
 
@@ -65,10 +65,8 @@ public class ConfigurationHandler {
     public void createGuildProperties(long idLong) {
         // Without condition so new configuration values won't break anything
         Logger.logDebugMessage("Updating or creating properties for " + idLong);
-        Properties guildProperties = new Properties();
         // this should be done by passing the defaults in the guildProperties constructor, but somehow it's not working
-        defaultProperties.forEach((k, v) -> guildProperties.putIfAbsent(k.toString(), v.toString()));
-        guildPropertyMap.put(idLong, guildProperties);
+        defaultProperties.forEach((k, v) -> guildPropertyMap.get(idLong).putIfAbsent(k.toString(), v.toString()));
     }
 
     public String getPropertiesAsString(long guildId) {
@@ -102,7 +100,8 @@ public class ConfigurationHandler {
     }
 
     private Long getIDFromFileName(Path file) {
-        return Long.parseLong(file.toString().replace(".config", ""));
+        // TODO: Remove hardcoded paths
+        return Long.parseLong(file.toString().replace(".config", "").replace("config\\",""));
     }
 
     private Properties loadPropertiesFromPath(Path currentPath) {
