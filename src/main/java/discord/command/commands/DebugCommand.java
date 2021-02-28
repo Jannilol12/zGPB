@@ -8,10 +8,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.StringJoiner;
 
-public class InfoCommand extends Command {
+public class DebugCommand extends Command {
 
-    public InfoCommand() {
-        super("info", "info", "retrieves info", 0);
+    public DebugCommand() {
+        super("debug", "debug", "debug", 0);
     }
 
     @Override

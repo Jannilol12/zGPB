@@ -1,7 +1,7 @@
 package discord.command;
 
-import discord.command.commands.DirectCommand;
-import discord.command.commands.InfoCommand;
+import discord.command.commands.InternalCommand;
+import discord.command.commands.DebugCommand;
 import discord.command.commands.StatusCommand;
 import log.Logger;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -21,8 +21,8 @@ public class CommandHandler {
 
     private void registerCommands() {
         commands.add(new StatusCommand());
-        commands.add(new InfoCommand());
-        commands.add(new DirectCommand());
+        commands.add(new DebugCommand());
+        commands.add(new InternalCommand());
 
         Logger.logDebugMessage("Registererd " + commands.size() + " commands");
     }

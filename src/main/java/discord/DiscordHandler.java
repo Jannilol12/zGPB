@@ -1,5 +1,6 @@
 package discord;
 
+import discord.listeners.GuildListener;
 import discord.listeners.MessageListener;
 import log.Logger;
 import net.dv8tion.jda.api.JDA;
@@ -14,7 +15,7 @@ public class DiscordHandler {
     public void createConnection() {
         try {
             localJDA = JDABuilder.createDefault(System.getenv("jadb_token"))
-                    .addEventListeners(new MessageListener())
+                    .addEventListeners(new MessageListener(), new GuildListener())
                     .build();
         } catch (LoginException e) {
             Logger.logException(e);
