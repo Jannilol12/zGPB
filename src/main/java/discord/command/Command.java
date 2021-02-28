@@ -26,10 +26,12 @@ public abstract class Command {
         this.argCount = argCount;
     }
 
-    protected void onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
+    protected boolean onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
         if (!isSyntaxCorrect(givenCommand)) {
-            mre.getMessage().reply("Wrong usage: " + usage).mentionRepliedUser(false).queue();
+            mre.getMessage().reply("wrong syntax: `" + usage+"`").mentionRepliedUser(false).queue();
+            return false;
         }
+        return true;
     }
 
     private HashSet<String> createAliasSetFromString(String... alias) {

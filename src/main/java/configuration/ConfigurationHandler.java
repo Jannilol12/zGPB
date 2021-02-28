@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -70,6 +71,16 @@ public class ConfigurationHandler {
         guildPropertyMap.put(idLong, guildProperties);
     }
 
+    public String getPropertiesAsString(long guildId) {
+        StringWriter tempWriter = new StringWriter();
+        try {
+            guildPropertyMap.get(guildId).store(tempWriter, "JADB configuration for guild=" + guildId);
+        } catch (IOException e) {
+            Logger.logException("Couldn't transform properties for " + guildId, e);
+        }
+        return tempWriter.getBuffer().toString();
+    }
+
     public char getConfigCharValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
         return guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey).charAt(0);
     }
@@ -88,14 +99,6 @@ public class ConfigurationHandler {
 
     public void setConfigValueForGuild(MessageReceivedEvent mre, String configKey, String configValue) {
         guildPropertyMap.get(mre.getGuild().getIdLong()).setProperty(configKey, configValue);
-    }
-
-    public void setConfigBooleanValueForGuild(MessageReceivedEvent mre, String configKey, boolean configValue) {
-        guildPropertyMap.get(mre.getGuild().getIdLong()).setProperty(configKey, configValue + "");
-    }
-
-    public void setConfigCharValueForGuild(MessageReceivedEvent mre, String configKey, char configValue) {
-        guildPropertyMap.get(mre.getGuild().getIdLong()).setProperty(configKey, configValue + "");
     }
 
     private Long getIDFromFileName(Path file) {

@@ -13,10 +13,14 @@ public class StatusCommand extends Command {
     }
 
     @Override
-    protected void onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
-        super.onCommand(mre, givenCommand, splitCommand);
+    protected boolean onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
+        if(!super.onCommand(mre, givenCommand, splitCommand))
+            return false;
+
         long latency = -mre.getMessage().getTimeCreated().until(ZonedDateTime.now(), ChronoUnit.MILLIS);
         mre.getChannel().sendMessage("Latency: " + latency + "ms; WebSocket: " + mre.getJDA().getGatewayPing() + "ms").queue();
+
+        return true;
     }
 
 }
