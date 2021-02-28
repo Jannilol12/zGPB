@@ -37,9 +37,7 @@ public abstract class Command {
     }
 
     protected boolean isSyntaxCorrect(String command) {
-        if (command.split(" ").length - 1 != argCount)
-            return false;
-        return true;
+        return command.split(" ").length - 1 == argCount;
     }
 
     public String getName() {

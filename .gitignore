@@ -1,6 +1,6 @@
-.idea/
 .gradle/
+.idea/
 build/
+config/
 data.db
 gradlew.bat
-config/

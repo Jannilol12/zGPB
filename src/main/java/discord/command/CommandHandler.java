@@ -1,7 +1,7 @@
 package discord.command;
 
-import discord.command.commands.InternalCommand;
 import discord.command.commands.DebugCommand;
+import discord.command.commands.InternalCommand;
 import discord.command.commands.StatusCommand;
 import log.Logger;
 import main.JADB;
