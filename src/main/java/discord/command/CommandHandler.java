@@ -4,6 +4,7 @@ import discord.command.commands.InternalCommand;
 import discord.command.commands.DebugCommand;
 import discord.command.commands.StatusCommand;
 import log.Logger;
+import main.JADB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.HashSet;
@@ -11,8 +12,7 @@ import java.util.HashSet;
 public class CommandHandler {
 
     private final HashSet<Command> commands;
-    // TODO: Add configuration management
-    private final char PREFIX = '+';
+    private final char PREFIX = '.';
 
     public CommandHandler() {
         this.commands = new HashSet<>();
@@ -29,7 +29,11 @@ public class CommandHandler {
 
     public void handleMessage(MessageReceivedEvent mre) {
         String msg = mre.getMessage().getContentRaw();
-        if (msg.charAt(0) != PREFIX)
+        char localPrefix = msg.charAt(0);
+
+        if ((mre.isFromGuild() && localPrefix != JADB.INSTANCE.configurationHandler.getConfigCharValueForGuildByEvent(mre, "prefix")))
+            return;
+        else if (localPrefix != PREFIX)
             return;
 
         msg = msg.substring(1);

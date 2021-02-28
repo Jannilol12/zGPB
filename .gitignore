@@ -3,3 +3,4 @@
 build/
 data.db
 gradlew.bat
+config/

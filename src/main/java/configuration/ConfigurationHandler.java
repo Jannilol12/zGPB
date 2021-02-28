@@ -1,6 +1,8 @@
 package configuration;
 
 import log.Logger;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -60,37 +62,40 @@ public class ConfigurationHandler {
     }
 
     public void createGuildProperties(long idLong) {
-        if (!guildPropertyMap.containsKey(idLong)) {
-            Logger.logDebugMessage("Creating properties for " + idLong);
-            Properties guildProperties = new Properties();
-            // this should be done by passing the defaults in the guildProperties constructor, but somehow it's not working
-            defaultProperties.forEach((k, v) -> guildProperties.setProperty(k.toString(), v.toString()));
-            guildPropertyMap.put(idLong, guildProperties);
-        }
+        // Without condition so new configuration values won't break anything
+        Logger.logDebugMessage("Updating or creating properties for " + idLong);
+        Properties guildProperties = new Properties();
+        // this should be done by passing the defaults in the guildProperties constructor, but somehow it's not working
+        defaultProperties.forEach((k, v) -> guildProperties.putIfAbsent(k.toString(), v.toString()));
+        guildPropertyMap.put(idLong, guildProperties);
     }
 
-    public String getConfigValueForGuild(long guildId, String configKey) {
-        return guildPropertyMap.get(guildId).getProperty(configKey);
+    public char getConfigCharValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
+        return guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey).charAt(0);
     }
 
-    public boolean getConfigBooleanValueForGuild(long guildId, String configKey) {
-        return Boolean.getBoolean(guildPropertyMap.get(guildId).getProperty(configKey));
+    public String getConfigValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
+        return guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey);
     }
 
-    public char getConfigCharValueForGuild(long guildId, String configKey) {
-        return guildPropertyMap.get(guildId).getProperty(configKey).charAt(0);
+    public boolean getConfigBooleanValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
+        return Boolean.getBoolean(guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey));
     }
 
-    public void setConfigValueForGuild(long guildId, String configKey, String configValue) {
-        guildPropertyMap.get(guildId).setProperty(configKey, configValue);
+    public boolean getConfigBooleanValueForGuildByMessage(Message m, String configKey) {
+        return Boolean.getBoolean(guildPropertyMap.get(m.getGuild().getIdLong()).getProperty(configKey));
     }
 
-    public void setConfigBooleanValueForGuild(long guildId, String configKey, boolean configValue) {
-        guildPropertyMap.get(guildId).setProperty(configKey, configValue + "");
+    public void setConfigValueForGuild(MessageReceivedEvent mre, String configKey, String configValue) {
+        guildPropertyMap.get(mre.getGuild().getIdLong()).setProperty(configKey, configValue);
     }
 
-    public void setConfigCharValueForGuild(long guildId, String configKey, char configValue) {
-        guildPropertyMap.get(guildId).setProperty(configKey, configValue + "");
+    public void setConfigBooleanValueForGuild(MessageReceivedEvent mre, String configKey, boolean configValue) {
+        guildPropertyMap.get(mre.getGuild().getIdLong()).setProperty(configKey, configValue + "");
+    }
+
+    public void setConfigCharValueForGuild(MessageReceivedEvent mre, String configKey, char configValue) {
+        guildPropertyMap.get(mre.getGuild().getIdLong()).setProperty(configKey, configValue + "");
     }
 
     private Long getIDFromFileName(Path file) {
