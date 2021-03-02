@@ -1,5 +1,6 @@
 package console;
 
+import discord.Validator;
 import main.JADB;
 
 import java.util.Scanner;
@@ -18,6 +19,10 @@ public class ConsoleHandler {
                 System.exit(0);
             else if (currentLine.equals("dump")) {
                 JADB.INSTANCE.databaseHandler.dumpDatabase();
+            } else if(currentLine.equals("token generate")) {
+                Validator.generateTokens();
+            } else if(currentLine.equals("token revoke")) {
+                Validator.revokeTokens();
             }
         }
 

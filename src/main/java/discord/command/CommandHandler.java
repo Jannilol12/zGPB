@@ -3,6 +3,7 @@ package discord.command;
 import discord.command.commands.ConfigCommand;
 import discord.command.commands.InternalCommand;
 import discord.command.commands.StatusCommand;
+import discord.command.commands.ValidateCommand;
 import log.Logger;
 import main.JADB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -23,6 +24,7 @@ public class CommandHandler {
         commands.add(new StatusCommand());
         commands.add(new InternalCommand());
         commands.add(new ConfigCommand());
+        commands.add(new ValidateCommand());
 
         Logger.logDebugMessage("Registered " + commands.size() + " commands");
     }

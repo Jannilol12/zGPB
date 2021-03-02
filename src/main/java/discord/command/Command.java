@@ -7,15 +7,12 @@ import java.util.HashSet;
 
 public abstract class Command {
 
-    private String name, usage, description;
-    private int argCount;
-    private HashSet<String> aliases;
+    protected String name, usage, description;
+    protected int argCount;
+    protected HashSet<String> aliases;
 
     public Command(String name, String usage, String description, int argCount, String... aliases) {
-        this.name = name;
-        this.usage = usage;
-        this.description = description;
-        this.argCount = argCount;
+        this(name, usage, description, argCount);
         this.aliases = createAliasSetFromString(aliases);
     }
 
@@ -32,6 +29,10 @@ public abstract class Command {
             return false;
         }
         return true;
+    }
+
+    public void onValidate(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
+
     }
 
     private HashSet<String> createAliasSetFromString(String... alias) {
