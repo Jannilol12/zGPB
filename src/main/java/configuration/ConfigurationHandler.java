@@ -2,6 +2,7 @@ package configuration;
 
 import log.Logger;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.FileInputStream;
@@ -24,6 +25,8 @@ public class ConfigurationHandler {
         defaultProperties = new Properties();
         defaultProperties.setProperty("logging_enabled", "false");
         defaultProperties.setProperty("prefix", ".");
+        // This can and will pose a security risk, so the user should be warned
+        defaultProperties.setProperty("allow_message_relay", "false");
 
         // TODO: Think about using directory that is independent from working direction
         if (!Files.exists(configFolder, LinkOption.NOFOLLOW_LINKS)) {
@@ -93,6 +96,10 @@ public class ConfigurationHandler {
 
     public boolean getConfigBooleanValueForGuildByMessage(Message m, String configKey) {
         return Boolean.getBoolean(guildPropertyMap.get(m.getGuild().getIdLong()).getProperty(configKey));
+    }
+
+    public boolean getConfigBooleanValueForGuildByChannel(TextChannel c, String configKey) {
+        return Boolean.getBoolean(guildPropertyMap.get(c.getGuild().getIdLong()).getProperty(configKey));
     }
 
     public void setConfigValueForGuild(MessageReceivedEvent mre, String configKey, String configValue) {

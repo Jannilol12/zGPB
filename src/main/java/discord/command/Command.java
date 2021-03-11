@@ -31,16 +31,12 @@ public abstract class Command {
         return true;
     }
 
-    public void onValidate(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
-
-    }
-
     private HashSet<String> createAliasSetFromString(String... alias) {
         return new HashSet<>(Arrays.asList(alias));
     }
 
     protected boolean isSyntaxCorrect(String command) {
-        return command.split(" ").length - 1 == argCount;
+        return command.split(" ",argCount).length == argCount;
     }
 
     public String getName() {
