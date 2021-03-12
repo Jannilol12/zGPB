@@ -1,9 +1,6 @@
 package discord.command;
 
-import discord.command.commands.ConfigCommand;
-import discord.command.commands.InternalCommand;
-import discord.command.commands.RelayCommand;
-import discord.command.commands.StatusCommand;
+import discord.command.commands.*;
 import log.Logger;
 import main.JADB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -25,6 +22,7 @@ public class CommandHandler {
         commands.add(new InternalCommand());
         commands.add(new ConfigCommand());
         commands.add(new RelayCommand());
+        commands.add(new ChannelCommand());
 
         Logger.logDebugMessage("Registered " + commands.size() + " commands");
     }

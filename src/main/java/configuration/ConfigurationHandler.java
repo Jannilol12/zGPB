@@ -27,6 +27,9 @@ public class ConfigurationHandler {
         defaultProperties.setProperty("prefix", ".");
         // This can and will pose a security risk, so the user should be warned
         defaultProperties.setProperty("allow_message_relay", "false");
+        defaultProperties.setProperty("temporary_channel_allowed", "false");
+        defaultProperties.setProperty("temporary_channel_category", "-1");
+        defaultProperties.setProperty("temporary_channel_max", "1");
 
         // TODO: Think about using directory that is independent from working direction
         if (!Files.exists(configFolder, LinkOption.NOFOLLOW_LINKS)) {
@@ -82,6 +85,14 @@ public class ConfigurationHandler {
         return tempWriter.getBuffer().toString();
     }
 
+    public int getConfigIntValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
+        return Integer.parseInt(guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey));
+    }
+
+    public long getConfigLongValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
+        return Long.parseLong(guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey));
+    }
+
     public char getConfigCharValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
         return guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey).charAt(0);
     }
@@ -103,12 +114,16 @@ public class ConfigurationHandler {
     }
 
     public void setConfigValueForGuild(MessageReceivedEvent mre, String configKey, String configValue) {
+        if (!defaultProperties.containsKey(configKey)) {
+            Logger.logDebugMessage("Adding new values is not allowed, " + mre.getMessage().getIdLong() + " : " + mre.getMessage().getContentRaw());
+            return;
+        }
         guildPropertyMap.get(mre.getGuild().getIdLong()).setProperty(configKey, configValue);
     }
 
     private Long getIDFromFileName(Path file) {
         // TODO: Remove hardcoded paths
-        return Long.parseLong(file.toString().replace(".config", "").replace("config\\",""));
+        return Long.parseLong(file.toString().replace(".config", "").replace("config\\", ""));
     }
 
     private Properties loadPropertiesFromPath(Path currentPath) {
