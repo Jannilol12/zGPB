@@ -33,7 +33,6 @@ public class ChannelCommand extends Command {
                 }
             }
         }
-
     }
 
     private static int getChannelCountByUser(long authorID) {
@@ -46,7 +45,6 @@ public class ChannelCommand extends Command {
     }
 
     private static VoiceChannel getChannelByUserAndChannel(long authorID, long channelID) {
-        int count = 0;
         for (Map.Entry<Long, VoiceChannel> e : channelMappings) {
             if (e.getKey() == authorID && e.getValue().getIdLong() == channelID)
                 return e.getValue();
@@ -69,7 +67,7 @@ public class ChannelCommand extends Command {
         // Permission handling, maybe require roles
         String[] secondSplit = givenCommand.split(" ");
 
-        int size = -1;
+        int size;
         if (secondSplit.length == 4) {
 
             try {
@@ -87,60 +85,80 @@ public class ChannelCommand extends Command {
             size = 99;
         }
 
-        if (splitCommand[1].equals("create")) {
-            if (secondSplit.length > 4)
-                return false;
+        long authorId = mre.getAuthor().getIdLong();
 
-            int maxGuildBitrate = mre.getGuild().getMaxBitrate();
-            long authorId = mre.getAuthor().getIdLong();
-
-            int maxChannelsPerUser = JADB.INSTANCE.configurationHandler.getConfigIntValueForGuildByEvent(mre, "temporary_channel_max");
-
-            if (getChannelCountByUser(authorId) >= maxChannelsPerUser) {
-                mre.getMessage().reply("you are only allowed to create " + maxChannelsPerUser + " channels").mentionRepliedUser(false).queue();
-                return true;
-            }
-
-            try {
-                category.createVoiceChannel(secondSplit[2]).setUserlimit(size).setBitrate(maxGuildBitrate).
-                        queue(channel -> {
-                            channelMappings.add(new AbstractMap.SimpleEntry<>(authorId, channel));
-                            JADB.INSTANCE.databaseHandler.insertTemporaryChannel(channel.getIdLong(), mre.getAuthor().getIdLong(), mre.getGuild().getIdLong(), channel.getName());
-                        });
-                mre.getMessage().reply("channel created successfully").mentionRepliedUser(false).queue();
-            } catch (InsufficientPermissionException ipe) {
-                mre.getMessage().reply("the bot has insufficient permissions").mentionRepliedUser(false).queue();
-            }
-
-        } else if (splitCommand[1].equals("modify")) {
-            if (secondSplit.length > 4)
-                return false;
-
-            long channelID = JADB.INSTANCE.databaseHandler.getTemporaryChannelIDByNameAndAuthor(mre.getAuthor().getIdLong(), secondSplit[2]);
-
-            if (channelID == -1) {
-                mre.getMessage().reply("channel name is ambiguous").mentionRepliedUser(false).queue();
-                return false;
-            } else if (channelID == -2) {
-                mre.getMessage().reply("you can only modify temporary channels that you created").mentionRepliedUser(false).queue();
-                return false;
-            }
-
-            VoiceChannel vc = getChannelByUserAndChannel(mre.getAuthor().getIdLong(), channelID);
-
-            if (vc != null) {
-                vc.getManager().setName(vc.getName()).setUserLimit(size == 99 ? vc.getUserLimit() : size).queue();
-                mre.getMessage().reply("channel successfully modified").mentionRepliedUser(false).queue();
-            } else {
-                mre.getMessage().reply("the channel was not found, this is probably not your fault").mentionRepliedUser(false).queue();
-            }
-
-        } else if (splitCommand[1].equals("delete")) {
-
+        if (secondSplit.length > 4) {
+            mre.getMessage().reply("too many arguments, usage: `" + usage + "`").queue();
+            return false;
         }
 
+        switch (splitCommand[1]) {
+            case "create" -> {
+                int maxGuildBitrate = mre.getGuild().getMaxBitrate();
+                int maxChannelsPerUser = JADB.INSTANCE.configurationHandler.getConfigIntValueForGuildByEvent(mre, "temporary_channel_max");
+                if (getChannelCountByUser(authorId) >= maxChannelsPerUser) {
+                    mre.getMessage().reply("you are only allowed to create " + maxChannelsPerUser + " channels").mentionRepliedUser(false).queue();
+                    return true;
+                }
+                try {
+                    category.createVoiceChannel(secondSplit[2]).setUserlimit(size).setBitrate(maxGuildBitrate).
+                            queue(channel -> {
+                                channelMappings.add(new AbstractMap.SimpleEntry<>(authorId, channel));
+                                JADB.INSTANCE.databaseHandler.insertTemporaryChannel(channel.getIdLong(), mre.getAuthor().getIdLong(), mre.getGuild().getIdLong(), channel.getName());
+                            });
+                    mre.getMessage().reply("channel created successfully").mentionRepliedUser(false).queue();
+                } catch (InsufficientPermissionException ipe) {
+                    mre.getMessage().reply("the bot has insufficient permissions").mentionRepliedUser(false).queue();
+                }
+            }
+            case "modify" -> {
+                long channelID = transformAndGetChannelID(mre, authorId, secondSplit[2], "you can only modify temporary channels that you created");
+
+                if (channelID == -1)
+                    return true;
+
+                VoiceChannel vc = getChannelByUserAndChannel(authorId, channelID);
+
+                if (vc != null) {
+                    vc.getManager().setName(vc.getName()).setUserLimit(size == 99 ? vc.getUserLimit() : size).queue();
+                    mre.getMessage().reply("channel successfully modified").mentionRepliedUser(false).queue();
+                } else {
+                    mre.getMessage().reply("the channel was not found, this is probably not your fault").mentionRepliedUser(false).queue();
+                }
+
+            }
+            case "delete" -> {
+                long channelID = transformAndGetChannelID(mre, authorId, secondSplit[2], "you can only delete temporary channels that you created");
+
+                if (channelID == -1)
+                    return true;
+
+                VoiceChannel vc = getChannelByUserAndChannel(authorId, channelID);
+
+                if (vc != null) {
+                    vc.delete().queue();
+                    mre.getMessage().reply("channel successfully deleted").mentionRepliedUser(false).queue();
+                } else {
+                    mre.getMessage().reply("couldn't delete channel, this is probably not your fault").mentionRepliedUser(false).queue();
+                }
+            }
+        }
 
         return true;
+    }
+
+    private long transformAndGetChannelID(MessageReceivedEvent mre, long authorID, String name, String specificText) {
+        long tempID = JADB.INSTANCE.databaseHandler.getTemporaryChannelIDByNameAndAuthor(authorID, name);
+
+        if (tempID == -1) {
+            mre.getMessage().reply("channel name is ambiguous").mentionRepliedUser(false).queue();
+            return -1;
+        } else if (tempID == -2) {
+            mre.getMessage().reply(specificText).mentionRepliedUser(false).queue();
+            return -1;
+        } else {
+            return tempID;
+        }
     }
 
 }
