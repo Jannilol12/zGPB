@@ -16,9 +16,10 @@ public class ConsoleHandler {
 
             if (currentLine.equals("quit"))
                 System.exit(0);
-            else if (currentLine.equals("dump")) {
+            else if (currentLine.equals("dump"))
                 JADB.INSTANCE.databaseHandler.dumpDatabase();
-            }
+            else
+                System.out.println(JADB.INSTANCE.databaseHandler.getResultFromQuery(currentLine, false));
         }
 
     }
