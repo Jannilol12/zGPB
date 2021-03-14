@@ -1,5 +1,6 @@
 package discord.command.commands;
 
+import discord.DataHandler;
 import discord.command.Command;
 import main.JADB;
 import net.dv8tion.jda.api.entities.Category;
@@ -22,13 +23,13 @@ public class ChannelCommand extends Command {
 
     public static void deleteUnusedChannels() {
         // Error handling
-        List<Long> tempChannels = JADB.INSTANCE.databaseHandler.getAllTemporaryChannels();
+        List<Long> tempChannels = DataHandler.getTemporaryChannels();
         if (tempChannels != null) {
-            for (long channelID : JADB.INSTANCE.databaseHandler.getAllTemporaryChannels()) {
+            for (long channelID : tempChannels) {
                 // TODO: If currentVoice is null, that means that the database is inconsistent, so the entry should be removed
                 VoiceChannel currentVoice = JADB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
                 if (currentVoice != null && currentVoice.getMembers().size() == 0) {
-                    JADB.INSTANCE.databaseHandler.removeTemporaryChannel(channelID);
+                    DataHandler.removeTemporaryChannel(channelID);
                     currentVoice.delete().queue();
                 }
             }
@@ -104,7 +105,7 @@ public class ChannelCommand extends Command {
                     category.createVoiceChannel(secondSplit[2]).setUserlimit(size).setBitrate(maxGuildBitrate).
                             queue(channel -> {
                                 channelMappings.add(new AbstractMap.SimpleEntry<>(authorId, channel));
-                                JADB.INSTANCE.databaseHandler.insertTemporaryChannel(channel.getIdLong(), mre.getAuthor().getIdLong(), mre.getGuild().getIdLong(), channel.getName());
+                                DataHandler.addTemporaryChannel(channel, mre);
                             });
                     mre.getMessage().reply("channel created successfully").mentionRepliedUser(false).queue();
                 } catch (InsufficientPermissionException ipe) {
@@ -148,7 +149,7 @@ public class ChannelCommand extends Command {
     }
 
     private long transformAndGetChannelID(MessageReceivedEvent mre, long authorID, String name, String specificText) {
-        long tempID = JADB.INSTANCE.databaseHandler.getTemporaryChannelIDByNameAndAuthor(authorID, name);
+        long tempID = DataHandler.getTemporaryChannelByNameAndID(authorID, name);
 
         if (tempID == -1) {
             mre.getMessage().reply("channel name is ambiguous").mentionRepliedUser(false).queue();
