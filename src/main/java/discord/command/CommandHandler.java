@@ -5,7 +5,9 @@ import log.Logger;
 import main.JADB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 public class CommandHandler {
 
@@ -23,6 +25,7 @@ public class CommandHandler {
         commands.add(new ConfigCommand());
         commands.add(new RelayCommand());
         commands.add(new ChannelCommand());
+        commands.add(new HelpCommand());
 
         Logger.logDebugMessage("Registered " + commands.size() + " commands");
     }
@@ -37,10 +40,15 @@ public class CommandHandler {
         String[] split = msg.split(" ");
         for (Command c : commands) {
             if (split[0].equals(c.getName()) || (c.getAliases() != null && c.getAliases().contains(split[0]))) {
+                // TODO: Permissions could be handled here
                 c.onCommand(mre, msg, split);
                 break;
             }
         }
+    }
+
+    public Set<Command> getRegisteredCommands() {
+        return Collections.unmodifiableSet(commands);
     }
 
     private boolean isValidPrefix(char localPrefix, MessageReceivedEvent mre) {
