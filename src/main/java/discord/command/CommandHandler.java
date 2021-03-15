@@ -26,6 +26,7 @@ public class CommandHandler {
         commands.add(new RelayCommand());
         commands.add(new ChannelCommand());
         commands.add(new HelpCommand());
+        commands.add(new ScanCommand());
 
         Logger.logDebugMessage("Registered " + commands.size() + " commands");
     }
