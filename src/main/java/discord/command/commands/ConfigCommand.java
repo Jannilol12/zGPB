@@ -2,13 +2,14 @@ package discord.command.commands;
 
 import discord.MessageCrafter;
 import discord.command.Command;
+import discord.command.CommandType;
 import main.JADB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class ConfigCommand extends Command {
 
     public ConfigCommand() {
-        super("config", "config <key=value | show>", "sets configuration values for current guild", 1, "configuration");
+        super("config", "config <key=value | show>", "sets configuration values for current guild", 1, CommandType.GUILD);
     }
 
     @Override

@@ -2,6 +2,7 @@ package discord.command.commands;
 
 import discord.DataHandler;
 import discord.command.Command;
+import discord.command.CommandType;
 import main.JADB;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -18,7 +19,7 @@ public class ChannelCommand extends Command {
     private static final ArrayList<Map.Entry<Long, VoiceChannel>> channelMappings = new ArrayList<>();
 
     public ChannelCommand() {
-        super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2);
+        super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2, CommandType.GUILD);
     }
 
     public static void deleteUnusedChannels() {

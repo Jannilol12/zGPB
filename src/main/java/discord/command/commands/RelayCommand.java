@@ -1,6 +1,7 @@
 package discord.command.commands;
 
 import discord.command.Command;
+import discord.command.CommandType;
 import main.JADB;
 import main.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -13,7 +14,7 @@ import java.util.List;
 public class RelayCommand extends Command {
 
     public RelayCommand() {
-        super("relay", "relay <channel_name | channel_id> message", "relays a message to a given channel", 2, "proxy");
+        super("relay", "relay <channel_name | channel_id> message", "relays a message to a given channel", 2, CommandType.PRIVATE);
     }
 
     @Override
@@ -21,24 +22,20 @@ public class RelayCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        if (mre.isFromGuild()) {
-            mre.getMessage().reply("Relaying messages is only allowed over private conversations").mentionRepliedUser(false).queue();
-            return false;
+        if (splitCommand[1].chars().allMatch(Character::isDigit)) {
+            relayMessage(mre, JADB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(Long.parseLong(splitCommand[1])), splitCommand[2]);
         } else {
-            if (splitCommand[1].chars().allMatch(Character::isDigit)) {
-                relayMessage(mre, JADB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(Long.parseLong(splitCommand[1])), splitCommand[2]);
-            } else {
-                List<TextChannel> channels = JADB.INSTANCE.discordHandler.getLocalJDA().getTextChannelsByName(splitCommand[1], false);
-                if (channels.size() == 0) {
-                    mre.getMessage().reply("There was no channel found that matches the given name").mentionRepliedUser(false).queue();
-                    return false;
-                } else if (channels.size() > 1) {
-                    mre.getMessage().reply("This channel name is ambiguous, please provide the channel id").mentionRepliedUser(false).queue();
-                    return false;
-                }
-                relayMessage(mre, channels.get(0), splitCommand[2]);
+            List<TextChannel> channels = JADB.INSTANCE.discordHandler.getLocalJDA().getTextChannelsByName(splitCommand[1], false);
+            if (channels.size() == 0) {
+                mre.getMessage().reply("There was no channel found that matches the given name").mentionRepliedUser(false).queue();
+                return false;
+            } else if (channels.size() > 1) {
+                mre.getMessage().reply("This channel name is ambiguous, please provide the channel id").mentionRepliedUser(false).queue();
+                return false;
             }
+            relayMessage(mre, channels.get(0), splitCommand[2]);
         }
+
 
         return true;
     }

@@ -18,7 +18,7 @@ public class MessageCrafter {
 
         eb.setColor(Color.CYAN);
         eb.setTimestamp(Instant.now());
-        eb.setFooter("[zGBP]");
+        eb.setFooter(">>>zGBP");
         eb.setTitle(title);
 
         for (EmbedField ef : fields)

@@ -10,6 +10,7 @@ public abstract class Command {
     protected String name, usage, description;
     protected int argCount;
     protected HashSet<String> aliases;
+    protected CommandType commandType;
 
     public Command(String name, String usage, String description, int argCount, String... aliases) {
         this(name, usage, description, argCount);
@@ -23,11 +24,28 @@ public abstract class Command {
         this.argCount = argCount;
     }
 
+    public Command(String name, String usage, String description, int argCount, CommandType commandType) {
+        this.name = name;
+        this.usage = usage;
+        this.description = description;
+        this.argCount = argCount;
+        this.commandType = commandType;
+    }
+
     protected boolean onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
         if (!isSyntaxCorrect(givenCommand)) {
             mre.getMessage().reply("wrong syntax: `" + usage+"`").mentionRepliedUser(false).queue();
             return false;
         }
+
+        if(commandType == CommandType.GUILD && !mre.isFromGuild()) {
+            mre.getMessage().reply("this command can only be used in guilds").mentionRepliedUser(false).queue();
+            return false;
+        } else if (commandType == CommandType.PRIVATE && mre.isFromGuild()) {
+            mre.getMessage().reply("this command can only be used in private chats").mentionRepliedUser(false).queue();
+            return false;
+        }
+
         return true;
     }
 
@@ -77,5 +95,13 @@ public abstract class Command {
 
     public void setAliases(HashSet<String> aliases) {
         this.aliases = aliases;
+    }
+
+    public CommandType getCommandType() {
+        return commandType;
+    }
+
+    public void setCommandType(CommandType commandType) {
+        this.commandType = commandType;
     }
 }
