@@ -18,14 +18,13 @@ dependencies {
     compile 'org.xerial:sqlite-jdbc:3.34.0'
 }
 
-test {
-    useJUnitPlatform()
+compileJava {
+    options.compilerArgs += ["--enable-preview"]
 }
-
 
 jar {
     manifest {
-        attributes "Main-Class": "main.JADB"
+        attributes("Main-Class": "main.JADB", "Implementation-Version": version)
     }
 
     from {
