@@ -30,6 +30,7 @@ public class ConfigurationHandler {
         defaultProperties.setProperty("temporary_channel_allowed", "false");
         defaultProperties.setProperty("temporary_channel_category", "-1");
         defaultProperties.setProperty("temporary_channel_max", "1");
+        defaultProperties.setProperty("emote_enabled", "false");
 
         // TODO: Think about using directory that is independent from working direction
         if (!Files.exists(configFolder, LinkOption.NOFOLLOW_LINKS)) {
