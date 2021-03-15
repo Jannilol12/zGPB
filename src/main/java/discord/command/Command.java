@@ -22,6 +22,7 @@ public abstract class Command {
         this.usage = usage;
         this.description = description;
         this.argCount = argCount;
+        this.commandType = CommandType.BOTH;
     }
 
     public Command(String name, String usage, String description, int argCount, CommandType commandType) {

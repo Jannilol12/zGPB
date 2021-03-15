@@ -28,6 +28,7 @@ public class CommandHandler {
         commands.add(new HelpCommand());
         commands.add(new ScanCommand());
         commands.add(new EmoteCommand());
+        commands.add(new DefineCommand());
 
         Logger.logDebugMessage("Registered " + commands.size() + " commands");
     }

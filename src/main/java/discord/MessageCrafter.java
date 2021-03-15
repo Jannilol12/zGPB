@@ -18,7 +18,7 @@ public class MessageCrafter {
 
         eb.setColor(Color.CYAN);
         eb.setTimestamp(Instant.now());
-        eb.setFooter(">>>zGBP");
+        eb.setFooter("zGBP");
         eb.setTitle(title);
 
         for (EmbedField ef : fields)
@@ -26,7 +26,6 @@ public class MessageCrafter {
 
         return eb.build();
     }
-
 
     public static String craftCodeMessage(String language, String content, boolean truncate) {
         int maxAllowedLength = 1999 - language.length() - 6;

@@ -16,6 +16,7 @@ dependencies {
 
     compile 'net.dv8tion:JDA:4.2.0_229'
     compile 'org.xerial:sqlite-jdbc:3.34.0'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
 }
 
 compileJava {
@@ -24,7 +25,7 @@ compileJava {
 
 jar {
     manifest {
-        attributes("Main-Class": "main.JADB", "Implementation-Version": version)
+        attributes("Main-Class": "main.JADB")
     }
 
     from {

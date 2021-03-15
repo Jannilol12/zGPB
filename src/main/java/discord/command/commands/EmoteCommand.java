@@ -49,7 +49,7 @@ public class EmoteCommand extends Command {
             return true;
         }
 
-        byte[] base64Image = NetworkUtil.getBase64FromURL(imageAttachment.getUrl());
+        byte[] base64Image = NetworkUtil.getBytesFromURL(imageAttachment.getUrl());
         if (base64Image == null) {
             mre.getMessage().reply("couldn't fetch image").mentionRepliedUser(false).queue();
             return true;
