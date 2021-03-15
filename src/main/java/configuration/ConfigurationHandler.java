@@ -102,15 +102,15 @@ public class ConfigurationHandler {
     }
 
     public boolean getConfigBooleanValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
-        return Boolean.getBoolean(guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey));
+        return Boolean.parseBoolean((guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey)));
     }
 
     public boolean getConfigBooleanValueForGuildByMessage(Message m, String configKey) {
-        return Boolean.getBoolean(guildPropertyMap.get(m.getGuild().getIdLong()).getProperty(configKey));
+        return Boolean.parseBoolean(guildPropertyMap.get(m.getGuild().getIdLong()).getProperty(configKey));
     }
 
     public boolean getConfigBooleanValueForGuildByChannel(TextChannel c, String configKey) {
-        return Boolean.getBoolean(guildPropertyMap.get(c.getGuild().getIdLong()).getProperty(configKey));
+        return Boolean.parseBoolean((guildPropertyMap.get(c.getGuild().getIdLong()).getProperty(configKey)));
     }
 
     public void setConfigValueForGuild(MessageReceivedEvent mre, String configKey, String configValue) {
