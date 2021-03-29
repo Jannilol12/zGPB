@@ -1,5 +1,7 @@
 package main;
 
+import discord.command.Command;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Util {
@@ -17,4 +19,43 @@ public final class Util {
         }
         return out.toString();
     }
+
+    public static Command getFuzzyMatchedCommand(String s) {
+        Command curr = null;
+        int lowLD = 1000;
+        for (Command c : JADB.INSTANCE.commandHandler.getRegisteredCommands()) {
+            int ld = getLevenshteinDistance(s, c.getName());
+            if (ld < lowLD) {
+                lowLD = ld;
+                curr = c;
+            }
+        }
+
+        if(lowLD > 2)
+            return null;
+
+        return curr;
+    }
+
+    public static int getLevenshteinDistance(String s1, String s2) {
+        int[][] distanceMatrix = new int[s1.length() + 1][s2.length() + 1];
+
+        for (int i = 0; i <= s1.length(); i++)
+            distanceMatrix[i][0] = i;
+
+        for (int i = 1; i <= s2.length(); i++)
+            distanceMatrix[0][i] = i;
+
+        for (int i = 1; i <= s1.length(); i++) {
+            for (int j = 1; j <= s2.length(); j++) {
+                int substitutionValue = (s1.charAt(i - 1) == s2.charAt(j - 1)) ? 0 : 1;
+
+                distanceMatrix[i][j] = Math.min(Math.min(distanceMatrix[i - 1][j] + 1,
+                        distanceMatrix[i][j - 1] + 1), distanceMatrix[i - 1][j - 1] + substitutionValue);
+            }
+        }
+
+        return distanceMatrix[s1.length()][s2.length()];
+    }
+
 }
