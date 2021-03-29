@@ -3,6 +3,7 @@ package discord.command;
 import discord.command.commands.*;
 import log.Logger;
 import main.JADB;
+import main.Util;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Collections;
@@ -41,13 +42,22 @@ public class CommandHandler {
 
         msg = msg.substring(1);
         String[] split = msg.split(" ");
+        boolean wasFound = false;
         for (Command c : commands) {
             if (split[0].equals(c.getName()) || (c.getAliases() != null && c.getAliases().contains(split[0]))) {
                 // TODO: Permissions could be handled here
                 c.onCommand(mre, msg, split);
+                wasFound = true;
                 break;
             }
         }
+
+        if(!wasFound) {
+            Command fuzz = Util.getFuzzyMatchedCommand(split[0]);
+            if(fuzz != null)
+                fuzz.onCommand(mre, msg, split);
+        }
+
     }
 
     public Set<Command> getRegisteredCommands() {
