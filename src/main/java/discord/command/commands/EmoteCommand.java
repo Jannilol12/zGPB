@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import network.NetworkUtil;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class EmoteCommand extends Command {
@@ -43,7 +44,16 @@ public class EmoteCommand extends Command {
             return true;
         }
 
+        List<Message.Attachment> messageAttachments = mre.getMessage().getAttachments();
+
+
+        if (messageAttachments.size() == 0) {
+            mre.getMessage().reply("no image attached").mentionRepliedUser(false).queue();
+            return true;
+        }
+
         Message.Attachment imageAttachment = mre.getMessage().getAttachments().get(0);
+
         if (!(imageAttachment.getFileExtension().equals("png") || imageAttachment.getFileExtension().equals("jpg"))) {
             mre.getMessage().reply("png/jpg only").mentionRepliedUser(false).queue();
             return true;
