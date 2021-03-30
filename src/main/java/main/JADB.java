@@ -6,6 +6,7 @@ import database.DatabaseHandler;
 import discord.DiscordHandler;
 import discord.command.CommandHandler;
 import log.Logger;
+import network.NetworkUtil;
 
 public class JADB {
 
@@ -33,6 +34,8 @@ public class JADB {
     private void init() {
         Logger.logDebugMessage("Reached init");
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
+
+        NetworkUtil.initializeCampusConnection();
 
         databaseHandler.initiateDatabase();
         discordHandler.createConnection();
