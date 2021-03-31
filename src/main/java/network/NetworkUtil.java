@@ -5,6 +5,10 @@ import log.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -13,9 +17,7 @@ import java.net.CookieManager;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class NetworkUtil {
 
@@ -26,15 +28,20 @@ public class NetworkUtil {
 
     private final static String IDM_USERNAME = System.getenv("jadb_idm_username");
     private final static String IDM_PASSWORD = System.getenv("jadb_idm_password");
-
     private final static String AUTH_STATE_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/Login";
     private final static String OAUTH_URL = "https://www.sso.uni-erlangen.de/simplesaml/module.php/core/loginuserpass.php?";
     private final static String SAML_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/SAML2/POST";
+
+
+    // Overview page we use to determine GRADE_PAGE_URL
     private final static String EXAM_PAGE_URL = "https://www.campus.uni-erlangen.de/qisserver/rds?state=template&template=pruefungen";
+    // Exam data can be retrieved here
+    private final static String EXAM_VIEW_URL = "https://www.campus.uni-erlangen.de/qisserver/rds?state=notenspiegelStudent&next=list.vm&nextdir=qispos/notenspiegel/student&createInfos=Y&struct=auswahlBaum&nodeID=auswahlBaum|abschluss:abschl=55,stg=079,abschlBE=&expand=0";
+    // Determine ASI value to retrieve exam data
     private static String GRADE_PAGE_URL;
+    private static String ASI;
 
     private NetworkUtil() {
-
     }
 
     public static void initializeCampusConnection() {
@@ -58,12 +65,11 @@ public class NetworkUtil {
             String authState = getAuthStateFromRequest(authRequest);
 
             Logger.logDebugMessage("Retrieving SAMLResponse");
-            // i have no idea what i am doing
             String oauthRequest = sendGetRequest(
                     OAUTH_URL + "AuthState=" + authState + "&username=" + IDM_USERNAME + "&password=" + IDM_PASSWORD,
                     Map.of(
-                    "Content-Length", authState.length() + IDM_USERNAME.length() + IDM_PASSWORD.length() + ""
-            ));
+                            "Content-Length", authState.length() + IDM_USERNAME.length() + IDM_PASSWORD.length() + ""
+                    ));
 
             Logger.logDebugMessage("Finish SSO");
             String SAMLResponse = getSAMLResponseFromRequest(oauthRequest);
@@ -80,13 +86,15 @@ public class NetworkUtil {
             // Check that SSO was successful
             String checkAuth = sendGetRequest(EXAM_PAGE_URL, Collections.emptyMap());
 
-            GRADE_PAGE_URL = getGradeURLFromRequest(checkAuth);
+            GRADE_PAGE_URL = getGradeURLFromRequest(checkAuth).replace("&amp;", "&");
+            // TODO: 01/04/2021 extract into own method
+            ASI = GRADE_PAGE_URL.split("/notenspiegel/student")[1];
 
         } catch (Exception e) {
             Logger.logException("Failed SSO", e);
         }
 
-        if(GRADE_PAGE_URL != null) {
+        if (GRADE_PAGE_URL != null) {
             Logger.logDebugMessage("SSO completed successfully");
         }
 
@@ -194,7 +202,6 @@ public class NetworkUtil {
         return null;
     }
 
-
     public static byte[] getBytesFromURL(String url) {
         try {
             URL imageUrl = new URL(url);
@@ -214,6 +221,41 @@ public class NetworkUtil {
             Logger.logException(e);
         }
         return null;
+    }
+
+    public static Set<GradeEntry> getGradesFromMyCampus() {
+        Set<GradeEntry> gradeEntries = new HashSet<>();
+
+        // ensure that the connection was initialized correctly
+        if (GRADE_PAGE_URL == null) {
+            Logger.logException("grade page url was null");
+            return null;
+        }
+
+        // retrieve exam data with previously fetched asi value
+        String req = sendGetRequest(EXAM_VIEW_URL + ASI,
+                Map.of("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"));
+
+        Document mainDoc = Jsoup.parse(Objects.requireNonNull(req));
+
+        // main table that holds exam information
+        Element gradeTable = mainDoc.getElementById("notenspiegel");
+
+        Elements exams = gradeTable.select("tr");
+        // first two are just headers so skip it
+        for (int i = 2; i < exams.size(); i++) {
+            Element currentExam = exams.get(i);
+            Elements examValues = currentExam.getElementsByTag("td");
+
+            gradeEntries.add(new GradeEntry(
+                    examValues.get(0).html(), examValues.get(1).html(), exams.get(2).text(),
+                    examValues.get(3).html(), examValues.get(4).text(), examValues.get(5).text(), examValues.get(6).text(),
+                    examValues.get(7).text(), examValues.get(8).text(), examValues.get(9).text()
+            ));
+
+        }
+
+        return gradeEntries;
     }
 
     public static DictionaryEntry getDefinitionForWord(String word) {
@@ -251,7 +293,7 @@ public class NetworkUtil {
         return null;
     }
 
-    // TODO: Use somthing like JSoup
+    // TODO: 01/04/2021 now that jsoup is part of the build anyway, it would be good to parse html the proper way
     public static String getAuthStateFromRequest(String request) {
         String[] split = request.split("<input type=\"hidden\" name=\"AuthState\" value=\"");
         return split[1].substring(0, split[1].indexOf("\""));
