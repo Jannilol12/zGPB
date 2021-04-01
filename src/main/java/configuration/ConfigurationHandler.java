@@ -67,7 +67,7 @@ public class ConfigurationHandler {
                 guildPropertyMap.get(id).store(new FileOutputStream(currentConfigFilePath.toFile()), "JADB configuration for guild=" + id);
             }
         } catch (Exception e) {
-            // TODO: Maybe dump to console on error
+            guildPropertyMap.forEach((l, p) -> System.out.println(l + "   " + p.toString()));
             Logger.logException("Couldn't save properties", e);
         }
     }
@@ -92,11 +92,8 @@ public class ConfigurationHandler {
     public Set<Long> getChannelsForGradeNotification() {
         Set<Long> result = new HashSet<>();
 
-        // TODO: 01/04/2021 unsafe code, long value needs to be ensured
         for (Long guild : guildPropertyMap.keySet()) {
-
             if (!guildPropertyMap.get(guild).getProperty("grade_notification").equals("none")) {
-
                 String rawChannelID = guildPropertyMap.get(guild).getProperty("grade_notification");
 
                 if (!rawChannelID.chars().allMatch(Character::isDigit)) {
@@ -108,9 +105,7 @@ public class ConfigurationHandler {
                         Logger.logException(e);
                     }
                 }
-
             }
-
         }
 
         return result;
@@ -153,7 +148,6 @@ public class ConfigurationHandler {
     }
 
     private Long getIDFromFileName(Path file) {
-        // TODO: Remove hardcoded paths
         return Long.parseLong(file.toString().replace(".config", "").replace("config\\", ""));
     }
 

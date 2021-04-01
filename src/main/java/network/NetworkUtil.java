@@ -87,9 +87,8 @@ public class NetworkUtil {
             // Check that SSO was successful
             String checkAuth = sendGetRequest(EXAM_PAGE_URL, Collections.emptyMap());
 
-            GRADE_PAGE_URL = getGradeURLFromRequest(checkAuth).replace("&amp;", "&");
-            // TODO: 01/04/2021 extract into own method
-            ASI = GRADE_PAGE_URL.split("/notenspiegel/student")[1];
+            GRADE_PAGE_URL = transformFromHTMLString(getGradeURLFromRequest(checkAuth));
+            ASI = getASIFromURL(GRADE_PAGE_URL);
 
         } catch (Exception e) {
             Logger.logException("Failed SSO", e);
@@ -299,7 +298,6 @@ public class NetworkUtil {
         return null;
     }
 
-    // TODO: 01/04/2021 now that jsoup is part of the build anyway, it would be good to parse html the proper way
     public static String getAuthStateFromRequest(String request) {
         String[] split = request.split("<input type=\"hidden\" name=\"AuthState\" value=\"");
         return split[1].substring(0, split[1].indexOf("\""));
@@ -320,9 +318,17 @@ public class NetworkUtil {
         return split[1].substring(0, split[1].indexOf("\""));
     }
 
+    public static String getASIFromURL(String url) {
+        return url.split("/notenspiegel/student")[1];
+    }
+
     // this is by no means a exhaustive list, just enough to work
     public static String transformToHTMLString(String in) {
         return in.replaceAll("\\+", "%2B").replaceAll("=", "%3D").replaceAll(":", "%3A");
+    }
+
+    public static String transformFromHTMLString(String in) {
+        return in.replace("&amp;", "&");
     }
 
 }

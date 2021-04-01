@@ -23,15 +23,17 @@ public class ChannelCommand extends Command {
     }
 
     public static void deleteUnusedChannels() {
-        // Error handling
         List<Long> tempChannels = DataHandler.getTemporaryChannels();
         if (tempChannels != null) {
             for (long channelID : tempChannels) {
-                // TODO: If currentVoice is null, that means that the database is inconsistent, so the entry should be removed
                 VoiceChannel currentVoice = JADB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
-                if (currentVoice != null && currentVoice.getMembers().size() == 0) {
+                if (currentVoice != null) {
+                    if(currentVoice.getMembers().size() == 0) {
+                        DataHandler.removeTemporaryChannel(channelID);
+                        currentVoice.delete().queue();
+                    }
+                } else {
                     DataHandler.removeTemporaryChannel(channelID);
-                    currentVoice.delete().queue();
                 }
             }
         }

@@ -22,7 +22,6 @@ public record GradeEntry(String id, String name, String semester, String date,
                '}';
     }
 
-    // TODO: 01/04/2021 I think this is needed for the sets to properly work
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

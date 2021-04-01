@@ -45,7 +45,6 @@ public class CommandHandler {
         boolean wasFound = false;
         for (Command c : commands) {
             if (split[0].equals(c.getName()) || (c.getAliases() != null && c.getAliases().contains(split[0]))) {
-                // TODO: Permissions could be handled here
                 c.onCommand(mre, msg, split);
                 wasFound = true;
                 break;
