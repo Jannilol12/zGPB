@@ -35,11 +35,11 @@ public abstract class Command {
 
     protected boolean onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
         if (!isSyntaxCorrect(givenCommand)) {
-            mre.getMessage().reply("wrong syntax: `" + usage+"`").mentionRepliedUser(false).queue();
+            mre.getMessage().reply("wrong syntax: `" + usage + "`").mentionRepliedUser(false).queue();
             return false;
         }
 
-        if(commandType == CommandType.GUILD && !mre.isFromGuild()) {
+        if (commandType == CommandType.GUILD && !mre.isFromGuild()) {
             mre.getMessage().reply("this command can only be used in guilds").mentionRepliedUser(false).queue();
             return false;
         } else if (commandType == CommandType.PRIVATE && mre.isFromGuild()) {
@@ -55,7 +55,7 @@ public abstract class Command {
     }
 
     protected boolean isSyntaxCorrect(String command) {
-        return command.split(" ",argCount).length == argCount;
+        return command.split(" ", argCount).length == argCount;
     }
 
     public String getName() {

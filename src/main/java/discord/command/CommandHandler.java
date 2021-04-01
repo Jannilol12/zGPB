@@ -52,9 +52,9 @@ public class CommandHandler {
             }
         }
 
-        if(!wasFound) {
+        if (!wasFound) {
             Command fuzz = Util.getFuzzyMatchedCommand(split[0]);
-            if(fuzz != null)
+            if (fuzz != null)
                 fuzz.onCommand(mre, msg, split);
         }
 

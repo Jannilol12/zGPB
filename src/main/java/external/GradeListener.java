@@ -35,9 +35,7 @@ public class GradeListener {
 
     public void waitForResults() {
         new Thread(() -> {
-
             while (true) {
-
 
                 if (!isEnabled)
                     return;
@@ -46,7 +44,6 @@ public class GradeListener {
                     return;
 
                 try {
-
                     Logger.logDebugMessage("Fetching new grades");
                     Set<GradeEntry> newEntries = Objects.requireNonNull(NetworkUtil.getGradesFromMyCampus());
 
@@ -76,12 +73,11 @@ public class GradeListener {
                         current = tempCopy;
                     }
 
-                    TimeUnit.MINUTES.sleep(5);
+                    TimeUnit.MINUTES.sleep(30);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
         }).start();
     }
 

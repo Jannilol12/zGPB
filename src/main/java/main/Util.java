@@ -31,7 +31,7 @@ public final class Util {
             }
         }
 
-        if(lowLD > 2)
+        if (lowLD > 2)
             return null;
 
         return curr;

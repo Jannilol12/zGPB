@@ -250,7 +250,7 @@ public class NetworkUtil {
             Element currentExam = exams.get(i);
             Elements examValues = currentExam.getElementsByTag("td");
 
-            if(examValues.get(3).html().trim().isEmpty())
+            if (examValues.get(3).html().trim().isEmpty())
                 continue;
 
             gradeEntries.add(new GradeEntry(

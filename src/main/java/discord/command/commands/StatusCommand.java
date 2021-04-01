@@ -14,7 +14,7 @@ public class StatusCommand extends Command {
 
     @Override
     protected boolean onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
-        if(!super.onCommand(mre, givenCommand, splitCommand))
+        if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
         long latency = -mre.getMessage().getTimeCreated().until(ZonedDateTime.now(), ChronoUnit.MILLIS);

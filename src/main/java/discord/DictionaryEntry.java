@@ -1,6 +1,7 @@
 package discord;
 
-public record DictionaryEntry(String definition, String example, String author, String url, int thumbsUp, int thumbsDown, String date) {
+public record DictionaryEntry(String definition, String example, String author, String url, int thumbsUp,
+                              int thumbsDown, String date) {
 
     @Override
     public String toString() {
