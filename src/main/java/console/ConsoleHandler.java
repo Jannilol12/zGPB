@@ -18,6 +18,8 @@ public class ConsoleHandler {
                 System.exit(0);
             else if (currentLine.equals("dump"))
                 JADB.INSTANCE.databaseHandler.dumpDatabase();
+            else if(currentLine.equals("dimd"))
+                JADB.INSTANCE.gradeListener.isEnabled = false;
             else
                 System.out.println(JADB.INSTANCE.databaseHandler.getResultFromQuery(currentLine, false));
         }

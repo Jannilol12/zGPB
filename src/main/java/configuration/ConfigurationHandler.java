@@ -13,7 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 public class ConfigurationHandler {
 
@@ -31,6 +33,7 @@ public class ConfigurationHandler {
         defaultProperties.setProperty("temporary_channel_category", "-1");
         defaultProperties.setProperty("temporary_channel_max", "1");
         defaultProperties.setProperty("emote_enabled", "false");
+        defaultProperties.setProperty("grade_notification", "none");
 
         // TODO: Think about using directory that is independent from working direction
         if (!Files.exists(configFolder, LinkOption.NOFOLLOW_LINKS)) {
@@ -84,6 +87,33 @@ public class ConfigurationHandler {
             Logger.logException("Couldn't transform properties for " + guildId, e);
         }
         return tempWriter.getBuffer().toString();
+    }
+
+    public Set<Long> getChannelsForGradeNotification() {
+        Set<Long> result = new HashSet<>();
+
+        // TODO: 01/04/2021 unsafe code, long value needs to be ensured
+        for (Long guild : guildPropertyMap.keySet()) {
+
+            if (!guildPropertyMap.get(guild).getProperty("grade_notification").equals("none")) {
+
+                String rawChannelID = guildPropertyMap.get(guild).getProperty("grade_notification");
+
+                if (!rawChannelID.chars().allMatch(Character::isDigit)) {
+                    Logger.logException("invalid channel id, skipping; " + rawChannelID + " - " + guild);
+                } else {
+                    try {
+                        result.add(Long.parseLong(rawChannelID));
+                    } catch (Exception e) {
+                        Logger.logException(e);
+                    }
+                }
+
+            }
+
+        }
+
+        return result;
     }
 
     public int getConfigIntValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {

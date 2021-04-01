@@ -19,6 +19,7 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+// TODO: 01/04/2021 Move my campus related code to a separate handler
 public class NetworkUtil {
 
     private final static Map<String, String> GENERAL_REQUEST_HEADERS = Map.of(
@@ -44,10 +45,10 @@ public class NetworkUtil {
     private NetworkUtil() {
     }
 
-    public static void initializeCampusConnection() {
+    public static boolean initializeCampusConnection() {
         if (IDM_USERNAME == null || IDM_PASSWORD == null) {
             Logger.logException("You need to provide IDM credentials to query exam information");
-            return;
+            return false;
         }
 
         // Persist cookies over various connections
@@ -96,8 +97,10 @@ public class NetworkUtil {
 
         if (GRADE_PAGE_URL != null) {
             Logger.logDebugMessage("SSO completed successfully");
+            return true;
         }
 
+        return false;
     }
 
     public static String sendGetRequest(String url, Map<String, String> headers) {
@@ -247,8 +250,11 @@ public class NetworkUtil {
             Element currentExam = exams.get(i);
             Elements examValues = currentExam.getElementsByTag("td");
 
+            if(examValues.get(3).html().trim().isEmpty())
+                continue;
+
             gradeEntries.add(new GradeEntry(
-                    examValues.get(0).html(), examValues.get(1).html(), exams.get(2).text(),
+                    examValues.get(0).text(), examValues.get(1).html(), examValues.get(2).text(),
                     examValues.get(3).html(), examValues.get(4).text(), examValues.get(5).text(), examValues.get(6).text(),
                     examValues.get(7).text(), examValues.get(8).text(), examValues.get(9).text()
             ));

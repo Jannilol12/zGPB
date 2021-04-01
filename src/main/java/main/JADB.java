@@ -5,8 +5,8 @@ import console.ConsoleHandler;
 import database.DatabaseHandler;
 import discord.DiscordHandler;
 import discord.command.CommandHandler;
+import external.GradeListener;
 import log.Logger;
-import network.NetworkUtil;
 
 public class JADB {
 
@@ -17,6 +17,7 @@ public class JADB {
     public final DatabaseHandler databaseHandler;
     public final DiscordHandler discordHandler;
     public final ConsoleHandler consoleHandler;
+    public final GradeListener gradeListener;
 
     public JADB() {
         Logger.logDebugMessage("reached pre init");
@@ -25,6 +26,7 @@ public class JADB {
         databaseHandler = new DatabaseHandler();
         discordHandler = new DiscordHandler();
         consoleHandler = new ConsoleHandler();
+        gradeListener = new GradeListener();
     }
 
     public static void main(String[] args) {
@@ -34,8 +36,6 @@ public class JADB {
     private void init() {
         Logger.logDebugMessage("Reached init");
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
-
-        NetworkUtil.initializeCampusConnection();
 
         databaseHandler.initiateDatabase();
         discordHandler.createConnection();
