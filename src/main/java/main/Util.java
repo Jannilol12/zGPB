@@ -12,6 +12,13 @@ public final class Util {
 
     }
 
+    public static boolean isValidDiscordID(String in) {
+        if (in.length() != 18)
+            return false;
+
+        return in.chars().allMatch(Character::isDigit);
+    }
+
     public static String createRandomString(int length) {
         StringBuilder out = new StringBuilder();
         for (int i = 0; i < length; i++) {

@@ -1,6 +1,7 @@
 package configuration;
 
 import log.Logger;
+import main.Util;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
+// TODO: 01/04/2021 redo configuration to ensure types
 public class ConfigurationHandler {
 
     private final Path configFolder = Path.of("config/");
@@ -96,7 +98,7 @@ public class ConfigurationHandler {
             if (!guildPropertyMap.get(guild).getProperty("grade_notification").equals("none")) {
                 String rawChannelID = guildPropertyMap.get(guild).getProperty("grade_notification");
 
-                if (!rawChannelID.chars().allMatch(Character::isDigit)) {
+                if (!Util.isValidDiscordID(rawChannelID)) {
                     Logger.logException("invalid channel id, skipping; " + rawChannelID + " - " + guild);
                 } else {
                     try {

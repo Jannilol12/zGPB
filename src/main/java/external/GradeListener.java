@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class GradeListener {
 
-    public boolean isEnabled = true;
+    public boolean isEnabled = false;
     private Set<GradeEntry> current;
     private boolean successfulInit = false;
 
