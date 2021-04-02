@@ -7,6 +7,7 @@ import discord.DiscordHandler;
 import discord.command.CommandHandler;
 import external.GradeListener;
 import log.Logger;
+import timing.ReminderHandler;
 
 public class JADB {
 
@@ -18,6 +19,7 @@ public class JADB {
     public final DiscordHandler discordHandler;
     public final ConsoleHandler consoleHandler;
     public final GradeListener gradeListener;
+    public final ReminderHandler reminderHandler;
 
     public JADB() {
         Logger.logDebugMessage("reached pre init");
@@ -27,6 +29,7 @@ public class JADB {
         discordHandler = new DiscordHandler();
         consoleHandler = new ConsoleHandler();
         gradeListener = new GradeListener();
+        reminderHandler = new ReminderHandler();
     }
 
     public static void main(String[] args) {
