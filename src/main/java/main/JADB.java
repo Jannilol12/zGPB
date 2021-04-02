@@ -37,12 +37,15 @@ public class JADB {
     }
 
     private void init() {
-        Logger.logDebugMessage("Reached init");
+        Logger.logDebugMessage("reached init");
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 
         databaseHandler.initiateDatabase();
         discordHandler.createConnection();
         consoleHandler.checkInput();
+
+        Logger.logDebugMessage("reached post init");
+        reminderHandler.registerOldReminders();
     }
 
     private void shutdown() {

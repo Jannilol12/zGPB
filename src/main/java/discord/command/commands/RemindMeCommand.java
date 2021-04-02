@@ -5,6 +5,7 @@ import discord.command.Command;
 import discord.command.CommandType;
 import main.JADB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import timing.Event;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,9 +42,12 @@ public class RemindMeCommand extends Command {
                 }
             }
 
+            Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
+            DataHandler.saveReminder(remindEvent);
             mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))).mentionRepliedUser(false).queue();
             JADB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
                 mre.getMessage().reply("here is your reminder :)").mentionRepliedUser(true).queue();
+                DataHandler.removeReminder(remindEvent);
             });
         } else {
             LocalDate date = null;
@@ -77,7 +81,7 @@ public class RemindMeCommand extends Command {
                     }
                 }
             }
-            
+
             LocalDateTime remindTime = null;
             if (date != null && time != null) {
                 remindTime = LocalDateTime.of(date, time);
@@ -88,8 +92,11 @@ public class RemindMeCommand extends Command {
             }
 
             if (remindTime != null) {
+                Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
+                DataHandler.saveReminder(remindEvent);
                 JADB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
                     mre.getMessage().reply("here is your reminder :)").mentionRepliedUser(true).queue();
+                    DataHandler.removeReminder(remindEvent);
                 });
                 mre.getMessage().reply("you will be reminded at the given time").mentionRepliedUser(false).queue();
             }
