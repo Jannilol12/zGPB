@@ -1,5 +1,6 @@
 package discord.command.commands;
 
+import discord.DataHandler;
 import discord.command.Command;
 import discord.command.CommandType;
 import main.JADB;
@@ -76,10 +77,18 @@ public class RemindMeCommand extends Command {
                     }
                 }
             }
-
-
+            
+            LocalDateTime remindTime = null;
             if (date != null && time != null) {
-                JADB.INSTANCE.reminderHandler.runTaskAtDateTime(LocalDateTime.of(date, time), () -> {
+                remindTime = LocalDateTime.of(date, time);
+            } else if (date != null) {
+                remindTime = date.atStartOfDay();
+            } else if (time != null) {
+                remindTime = time.atDate(LocalDate.now());
+            }
+
+            if (remindTime != null) {
+                JADB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
                     mre.getMessage().reply("here is your reminder :)").mentionRepliedUser(true).queue();
                 });
                 mre.getMessage().reply("you will be reminded at the given time").mentionRepliedUser(false).queue();
