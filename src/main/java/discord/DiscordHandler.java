@@ -6,6 +6,7 @@ import discord.listeners.MessageListener;
 import log.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
 import java.time.LocalTime;
@@ -22,6 +23,7 @@ public class DiscordHandler {
         try {
             localJDA = JDABuilder.createDefault(System.getenv("jadb_token"))
                     .addEventListeners(new MessageListener(), new GuildListener())
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .build();
         } catch (LoginException e) {
             Logger.logException(e);

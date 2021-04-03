@@ -2,6 +2,7 @@ package configuration;
 
 import log.Logger;
 import main.Util;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -36,6 +37,9 @@ public class ConfigurationHandler {
         defaultProperties.setProperty("temporary_channel_max", "1");
         defaultProperties.setProperty("emote_enabled", "false");
         defaultProperties.setProperty("grade_notification", "none");
+        defaultProperties.setProperty("fix_role_change", "false");
+        defaultProperties.setProperty("fix_role_add", "");
+        defaultProperties.setProperty("fix_role_remove", "no_role");
 
         // TODO: Think about using directory that is independent from working direction
         if (!Files.exists(configFolder, LinkOption.NOFOLLOW_LINKS)) {
@@ -113,6 +117,10 @@ public class ConfigurationHandler {
         return result;
     }
 
+    public String getConfigValueForGuildByGuild(Guild g, String configKey) {
+        return (guildPropertyMap.get(g.getIdLong()).getProperty(configKey));
+    }
+
     public int getConfigIntValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
         return Integer.parseInt(guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey));
     }
@@ -131,6 +139,10 @@ public class ConfigurationHandler {
 
     public boolean getConfigBooleanValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
         return Boolean.parseBoolean((guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey)));
+    }
+
+    public boolean getConfigBooleanValueForGuildByGuild(Guild g, String configKey) {
+        return Boolean.parseBoolean((guildPropertyMap.get(g.getIdLong()).getProperty(configKey)));
     }
 
     public boolean getConfigBooleanValueForGuildByMessage(Message m, String configKey) {
