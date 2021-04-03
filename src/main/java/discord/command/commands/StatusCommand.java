@@ -17,7 +17,7 @@ public class StatusCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        long latency = -mre.getMessage().getTimeCreated().until(ZonedDateTime.now(), ChronoUnit.MILLIS);
+        long latency = mre.getMessage().getTimeCreated().until(ZonedDateTime.now(), ChronoUnit.MILLIS);
         mre.getChannel().sendMessage("Latency: " + latency + "ms; WebSocket: " + mre.getJDA().getGatewayPing() + "ms").queue();
 
         return true;
