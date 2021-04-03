@@ -7,10 +7,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -164,7 +161,7 @@ public class ConfigurationHandler {
     }
 
     private Long getIDFromFileName(Path file) {
-        return Long.parseLong(file.toString().replace(".config", "").replace("config\\", ""));
+        return Long.parseLong(file.toString().replace(".config", "").replace("config" + File.separator, ""));
     }
 
     private Properties loadPropertiesFromPath(Path currentPath) {

@@ -38,7 +38,7 @@ public class CommandHandler {
     public void handleMessage(MessageReceivedEvent mre) {
         String msg = mre.getMessage().getContentRaw();
 
-        if(msg.trim().isEmpty())
+        if(msg.trim().isEmpty() && msg.trim().length() < 2)
             return;
 
         if (!isValidPrefix(msg.charAt(0), mre))
