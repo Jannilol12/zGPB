@@ -9,7 +9,7 @@ import java.time.temporal.ChronoUnit;
 public class StatusCommand extends Command {
 
     public StatusCommand() {
-        super("status", "status", "prints basic bot information", 0, "healthcheck");
+        super("status", "status", "prints basic bot information", 1, "healthcheck");
     }
 
     @Override
