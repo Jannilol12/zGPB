@@ -20,6 +20,8 @@ public class ConsoleHandler {
                     zGPB.INSTANCE.databaseHandler.dumpDatabase();
                 else if (currentLine.equals("dimd"))
                     zGPB.INSTANCE.gradeListener.isEnabled = false;
+                else if(currentLine.equals("backup"))
+                    zGPB.INSTANCE.databaseHandler.executeStatement("BACKUP TO data.db");
                 else
                     System.out.println(zGPB.INSTANCE.databaseHandler.getResultFromQuery(currentLine, false));
             }
