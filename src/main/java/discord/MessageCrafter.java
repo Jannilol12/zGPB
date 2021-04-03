@@ -28,7 +28,7 @@ public class MessageCrafter {
     }
 
     public static String craftCodeMessage(String language, String content, boolean truncate) {
-        int maxAllowedLength = 1999 - language.length() - 6;
+        int maxAllowedLength = 1999 - language.length() - 10;
 
         if (!truncate && content.length() >= maxAllowedLength)
             return null;

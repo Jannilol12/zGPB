@@ -2,5 +2,6 @@
 .idea/
 build/
 config/
+olddata.db
 data.db
 gradlew.bat
