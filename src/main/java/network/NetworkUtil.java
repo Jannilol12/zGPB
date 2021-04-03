@@ -278,7 +278,7 @@ public class NetworkUtil {
                 JSONObject cur = (JSONObject) keyIterator.next();
                 long tu = (Long) cur.get("thumbs_up");
                 long td = (Long) cur.get("thumbs_down");
-                if (tu + td < 10)
+                if (tu + td < 5)
                     continue;
                 if (td == 0)
                     td = 1;
