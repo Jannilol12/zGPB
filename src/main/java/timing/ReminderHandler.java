@@ -2,7 +2,7 @@ package timing;
 
 import discord.DataHandler;
 import log.Logger;
-import main.JADB;
+import main.zGPB;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -19,7 +19,7 @@ public class ReminderHandler {
     }
 
     public void registerOldReminders() {
-        Set<Event> reminders = JADB.INSTANCE.databaseHandler.getReminders();
+        Set<Event> reminders = zGPB.INSTANCE.databaseHandler.getReminders();
         Logger.logDebugMessage("Registering " + reminders.size() + " past reminders");
         reminders.forEach(event -> {
             // fix database inconsistencies on the fly
@@ -27,7 +27,7 @@ public class ReminderHandler {
                 DataHandler.removeReminder(event);
             } else {
                 runTaskAtDateTime(event.time(), () -> {
-                    JADB.INSTANCE.discordHandler.getLocalJDA().
+                    zGPB.INSTANCE.discordHandler.getLocalJDA().
                             getTextChannelById(event.channelID()).
                             retrieveMessageById(event.messageID()).queue(m -> m.reply("here is your reminder :)").queue());
                     DataHandler.removeReminder(event);

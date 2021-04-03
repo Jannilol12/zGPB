@@ -3,7 +3,7 @@ package discord.command.commands;
 import discord.EmbedField;
 import discord.MessageCrafter;
 import discord.command.Command;
-import main.JADB;
+import main.zGPB;
 import main.Util;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -25,7 +25,7 @@ public class HelpCommand extends Command {
         if (splitCommand.length > 2) {
             mre.getMessage().reply("wrong usage, usage: `" + usage + "`").mentionRepliedUser(false).queue();
         } else if (splitCommand.length == 2) {
-            List<Command> a = JADB.INSTANCE.commandHandler.getRegisteredCommands().
+            List<Command> a = zGPB.INSTANCE.commandHandler.getRegisteredCommands().
                     stream().filter(c -> c.getName().equals(splitCommand[1])).collect(Collectors.toList());
 
             Command cur = null;
@@ -49,7 +49,7 @@ public class HelpCommand extends Command {
                     .mentionRepliedUser(false).queue();
         } else {
             HashSet<EmbedField> commandFields = new HashSet<>();
-            for (Command c : JADB.INSTANCE.commandHandler.getRegisteredCommands()) {
+            for (Command c : zGPB.INSTANCE.commandHandler.getRegisteredCommands()) {
                 commandFields.add(new EmbedField(c.getName(), c.getDescription(), false));
             }
             mre.getMessage().reply(MessageCrafter.craftGenericEmbedMessage("help", commandFields)).mentionRepliedUser(false).queue();

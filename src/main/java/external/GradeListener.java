@@ -3,7 +3,7 @@ package external;
 import discord.EmbedField;
 import discord.MessageCrafter;
 import log.Logger;
-import main.JADB;
+import main.zGPB;
 import net.dv8tion.jda.api.entities.TextChannel;
 import network.GradeEntry;
 import network.NetworkUtil;
@@ -51,8 +51,8 @@ public class GradeListener {
                         Set<GradeEntry> tempCopy = new HashSet<>(newEntries);
                         newEntries.removeAll(current);
 
-                        for (long channelID : JADB.INSTANCE.configurationHandler.getChannelsForGradeNotification()) {
-                            TextChannel tc = JADB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(channelID);
+                        for (long channelID : zGPB.INSTANCE.configurationHandler.getChannelsForGradeNotification()) {
+                            TextChannel tc = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(channelID);
 
                             if (tc != null) {
                                 for (GradeEntry ge : newEntries) {

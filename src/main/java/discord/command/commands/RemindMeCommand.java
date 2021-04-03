@@ -3,7 +3,7 @@ package discord.command.commands;
 import discord.DataHandler;
 import discord.command.Command;
 import discord.command.CommandType;
-import main.JADB;
+import main.zGPB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import timing.Event;
 
@@ -45,7 +45,7 @@ public class RemindMeCommand extends Command {
             Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
             DataHandler.saveReminder(remindEvent);
             mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))).mentionRepliedUser(false).queue();
-            JADB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
+            zGPB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
                 mre.getMessage().reply("here is your reminder :)").mentionRepliedUser(true).queue();
                 DataHandler.removeReminder(remindEvent);
             });
@@ -94,7 +94,7 @@ public class RemindMeCommand extends Command {
             if (remindTime != null) {
                 Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
                 DataHandler.saveReminder(remindEvent);
-                JADB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
+                zGPB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
                     mre.getMessage().reply("here is your reminder :)").mentionRepliedUser(true).queue();
                     DataHandler.removeReminder(remindEvent);
                 });

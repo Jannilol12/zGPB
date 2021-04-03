@@ -1,6 +1,6 @@
 package discord.listeners;
 
-import main.JADB;
+import main.zGPB;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -16,15 +16,15 @@ public class GuildListener extends ListenerAdapter {
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
-        JADB.INSTANCE.configurationHandler.createGuildProperties(event.getGuild().getIdLong());
+        zGPB.INSTANCE.configurationHandler.createGuildProperties(event.getGuild().getIdLong());
     }
 
     @Override
     public void onGuildMemberRoleAdd(@NotNull GuildMemberRoleAddEvent event) {
         // TODO: 03/04/2021 move to better place
-        if (JADB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByGuild(event.getGuild(), "fix_role_change")) {
+        if (zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByGuild(event.getGuild(), "fix_role_change")) {
             AtomicBoolean foundConflicting = new AtomicBoolean(false);
-            String rawRoles = JADB.INSTANCE.configurationHandler.getConfigValueForGuildByGuild(event.getGuild(), "fix_role_add");
+            String rawRoles = zGPB.INSTANCE.configurationHandler.getConfigValueForGuildByGuild(event.getGuild(), "fix_role_add");
             String[] conflicting = rawRoles.contains(",") ? rawRoles.split(",") : new String[]{rawRoles};
 
             if (conflicting.length == 0)
@@ -36,10 +36,10 @@ public class GuildListener extends ListenerAdapter {
             });
 
             if (foundConflicting.get()) {
-                String fixRemove = JADB.INSTANCE.configurationHandler.getConfigValueForGuildByGuild(event.getGuild(), "fix_role_remove");
+                String fixRemove = zGPB.INSTANCE.configurationHandler.getConfigValueForGuildByGuild(event.getGuild(), "fix_role_remove");
                 if (fixRemove.trim().isEmpty())
                     return;
-                List<Role> fixRole = JADB.INSTANCE.discordHandler.getLocalJDA().getRolesByName(fixRemove, false);
+                List<Role> fixRole = zGPB.INSTANCE.discordHandler.getLocalJDA().getRolesByName(fixRemove, false);
                 if (fixRole.isEmpty())
                     return;
                 Role guildRole = fixRole.stream().filter(r -> r.getGuild().getIdLong() == event.getGuild().getIdLong()).findFirst().get();

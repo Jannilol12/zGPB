@@ -2,7 +2,7 @@ package discord.command.commands;
 
 import discord.command.Command;
 import discord.command.CommandType;
-import main.JADB;
+import main.zGPB;
 import main.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -23,9 +23,9 @@ public class RelayCommand extends Command {
             return false;
 
         if (splitCommand[1].chars().allMatch(Character::isDigit)) {
-            relayMessage(mre, JADB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(Long.parseLong(splitCommand[1])), splitCommand[2]);
+            relayMessage(mre, zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(Long.parseLong(splitCommand[1])), splitCommand[2]);
         } else {
-            List<TextChannel> channels = JADB.INSTANCE.discordHandler.getLocalJDA().getTextChannelsByName(splitCommand[1], false);
+            List<TextChannel> channels = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelsByName(splitCommand[1], false);
             if (channels.size() == 0) {
                 mre.getMessage().reply("There was no channel found that matches the given name").mentionRepliedUser(false).queue();
                 return false;
@@ -42,7 +42,7 @@ public class RelayCommand extends Command {
 
     private void relayMessage(MessageReceivedEvent mre, TextChannel channel, String message) {
 
-        if (!JADB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByChannel(channel, "allow_message_relay")) {
+        if (!zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByChannel(channel, "allow_message_relay")) {
             mre.getMessage().reply("This guild does not allow relaying messages").mentionRepliedUser(false).queue();
             return;
         }

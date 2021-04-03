@@ -9,9 +9,9 @@ import external.GradeListener;
 import log.Logger;
 import timing.ReminderHandler;
 
-public class JADB {
+public class zGPB {
 
-    public static final JADB INSTANCE = new JADB();
+    public static final zGPB INSTANCE = new zGPB();
 
     public final ConfigurationHandler configurationHandler;
     public final CommandHandler commandHandler;
@@ -21,7 +21,7 @@ public class JADB {
     public final GradeListener gradeListener;
     public final ReminderHandler reminderHandler;
 
-    public JADB() {
+    public zGPB() {
         Logger.logDebugMessage("reached pre init");
         configurationHandler = new ConfigurationHandler();
         commandHandler = new CommandHandler();

@@ -21,7 +21,7 @@ public class DiscordHandler {
 
     public void createConnection() {
         try {
-            localJDA = JDABuilder.createDefault(System.getenv("jadb_token"))
+            localJDA = JDABuilder.createDefault(System.getenv("zGPB_token"))
                     .addEventListeners(new MessageListener(), new GuildListener())
                     .enableIntents(GatewayIntent.GUILD_MEMBERS)
                     .build();

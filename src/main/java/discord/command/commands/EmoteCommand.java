@@ -2,7 +2,7 @@ package discord.command.commands;
 
 import discord.command.Command;
 import discord.command.CommandType;
-import main.JADB;
+import main.zGPB;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
@@ -24,7 +24,7 @@ public class EmoteCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        if (!JADB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByEvent(mre, "emote_enabled")) {
+        if (!zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByEvent(mre, "emote_enabled")) {
             mre.getMessage().reply("this guild does not support adding emotes").mentionRepliedUser(false).queue();
             return true;
         }

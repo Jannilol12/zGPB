@@ -2,7 +2,7 @@ package discord.command;
 
 import discord.command.commands.*;
 import log.Logger;
-import main.JADB;
+import main.zGPB;
 import main.Util;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -66,7 +66,7 @@ public class CommandHandler {
 
     private boolean isValidPrefix(char localPrefix, MessageReceivedEvent mre) {
         if (mre.isFromGuild())
-            return localPrefix == JADB.INSTANCE.configurationHandler.getConfigCharValueForGuildByEvent(mre, "prefix");
+            return localPrefix == zGPB.INSTANCE.configurationHandler.getConfigCharValueForGuildByEvent(mre, "prefix");
         return localPrefix == PREFIX;
     }
 

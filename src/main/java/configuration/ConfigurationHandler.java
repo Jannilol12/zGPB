@@ -70,7 +70,7 @@ public class ConfigurationHandler {
                 if (!Files.exists(currentConfigFilePath)) {
                     Files.createFile(currentConfigFilePath);
                 }
-                guildPropertyMap.get(id).store(new FileOutputStream(currentConfigFilePath.toFile()), "JADB configuration for guild=" + id);
+                guildPropertyMap.get(id).store(new FileOutputStream(currentConfigFilePath.toFile()), "zGPB configuration for guild=" + id);
             }
         } catch (Exception e) {
             guildPropertyMap.forEach((l, p) -> System.out.println(l + "   " + p.toString()));
@@ -88,7 +88,7 @@ public class ConfigurationHandler {
     public String getPropertiesAsString(long guildId) {
         StringWriter tempWriter = new StringWriter();
         try {
-            guildPropertyMap.get(guildId).store(tempWriter, "JADB configuration for guild=" + guildId);
+            guildPropertyMap.get(guildId).store(tempWriter, "zGPB configuration for guild=" + guildId);
         } catch (IOException e) {
             Logger.logException("Couldn't transform properties for " + guildId, e);
         }

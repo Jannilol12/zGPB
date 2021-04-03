@@ -27,8 +27,8 @@ public class NetworkUtil {
             "DNT", "1"
     );
 
-    private final static String IDM_USERNAME = System.getenv("jadb_idm_username");
-    private final static String IDM_PASSWORD = System.getenv("jadb_idm_password");
+    private final static String IDM_USERNAME = System.getenv("zGPB_idm_username");
+    private final static String IDM_PASSWORD = System.getenv("zGPB_idm_password");
     private final static String AUTH_STATE_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/Login";
     private final static String OAUTH_URL = "https://www.sso.uni-erlangen.de/simplesaml/module.php/core/loginuserpass.php?";
     private final static String SAML_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/SAML2/POST";
@@ -266,7 +266,7 @@ public class NetworkUtil {
     public static DictionaryEntry getDefinitionForWord(String word) {
         JSONParser parser = new JSONParser();
         try {
-            JSONObject root = (JSONObject) parser.parse(new String(getBytesFromURL(System.getenv("jadb_urban").replace("[X]", word))));
+            JSONObject root = (JSONObject) parser.parse(new String(getBytesFromURL(System.getenv("zGPB_urban").replace("[X]", word))));
 
             JSONArray entries = (JSONArray) root.get("list");
 
@@ -285,7 +285,7 @@ public class NetworkUtil {
                 if ((float) tu / td > (currentMax == null ? 0 : (float) currentMax.thumbsUp() / currentMax.thumbsDown())) {
                     currentMax = new DictionaryEntry(
                             (String) cur.get("definition"), (String) cur.get("example"), (String) cur.get("author"),
-                            System.getenv("jadb_urban_main").replace("[X]", word), Math.toIntExact((Long) cur.get("thumbs_up")),
+                            System.getenv("zGPB_urban_main").replace("[X]", word), Math.toIntExact((Long) cur.get("thumbs_up")),
                             Math.toIntExact((Long) cur.get("thumbs_down")), (String) cur.get("written_on"));
                 }
             }

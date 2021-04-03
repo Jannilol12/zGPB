@@ -3,7 +3,7 @@ package discord.command.commands;
 import discord.DataHandler;
 import discord.command.Command;
 import discord.command.CommandType;
-import main.JADB;
+import main.zGPB;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -26,7 +26,7 @@ public class ChannelCommand extends Command {
         List<Long> tempChannels = DataHandler.getTemporaryChannels();
         if (tempChannels != null) {
             for (long channelID : tempChannels) {
-                VoiceChannel currentVoice = JADB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
+                VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
                 if (currentVoice != null) {
                     if(currentVoice.getMembers().size() == 0) {
                         DataHandler.removeTemporaryChannel(channelID);
@@ -61,7 +61,7 @@ public class ChannelCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        Category category = mre.getGuild().getCategoryById(JADB.INSTANCE.configurationHandler.
+        Category category = mre.getGuild().getCategoryById(zGPB.INSTANCE.configurationHandler.
                 getConfigLongValueForGuildByEvent(mre, "temporary_channel_category"));
         if (category == null) {
             mre.getMessage().reply("this guild does not have a temporary channel category set").mentionRepliedUser(false).queue();
@@ -99,7 +99,7 @@ public class ChannelCommand extends Command {
         switch (splitCommand[1]) {
             case "create" -> {
                 int maxGuildBitrate = mre.getGuild().getMaxBitrate();
-                int maxChannelsPerUser = JADB.INSTANCE.configurationHandler.getConfigIntValueForGuildByEvent(mre, "temporary_channel_max");
+                int maxChannelsPerUser = zGPB.INSTANCE.configurationHandler.getConfigIntValueForGuildByEvent(mre, "temporary_channel_max");
                 if (getChannelCountByUser(authorId) >= maxChannelsPerUser) {
                     mre.getMessage().reply("you are only allowed to create " + maxChannelsPerUser + " channels").mentionRepliedUser(false).queue();
                     return true;

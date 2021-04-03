@@ -1,6 +1,6 @@
 package console;
 
-import main.JADB;
+import main.zGPB;
 
 import java.util.Scanner;
 
@@ -17,11 +17,11 @@ public class ConsoleHandler {
                 if (currentLine.equals("quit"))
                     System.exit(0);
                 else if (currentLine.equals("dump"))
-                    JADB.INSTANCE.databaseHandler.dumpDatabase();
+                    zGPB.INSTANCE.databaseHandler.dumpDatabase();
                 else if (currentLine.equals("dimd"))
-                    JADB.INSTANCE.gradeListener.isEnabled = false;
+                    zGPB.INSTANCE.gradeListener.isEnabled = false;
                 else
-                    System.out.println(JADB.INSTANCE.databaseHandler.getResultFromQuery(currentLine, false));
+                    System.out.println(zGPB.INSTANCE.databaseHandler.getResultFromQuery(currentLine, false));
             }
 
         }).start();

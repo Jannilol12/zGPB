@@ -30,7 +30,7 @@ public final class Util {
     public static Command getFuzzyMatchedCommand(String s) {
         Command curr = null;
         int lowLD = 1000;
-        for (Command c : JADB.INSTANCE.commandHandler.getRegisteredCommands()) {
+        for (Command c : zGPB.INSTANCE.commandHandler.getRegisteredCommands()) {
             int ld = getLevenshteinDistance(s, c.getName());
             if (ld < lowLD) {
                 lowLD = ld;
