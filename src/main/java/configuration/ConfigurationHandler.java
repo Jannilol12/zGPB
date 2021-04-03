@@ -79,6 +79,8 @@ public class ConfigurationHandler {
     }
 
     public void createGuildProperties(long idLong) {
+        if(!guildPropertyMap.containsKey(idLong))
+            guildPropertyMap.put(idLong, new Properties());
         // Without condition so new configuration values won't break anything
         Logger.logDebugMessage("Updating or creating properties for " + idLong);
         // this should be done by passing the defaults in the guildProperties constructor, but somehow it's not working
