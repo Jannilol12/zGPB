@@ -28,10 +28,10 @@ public class RelayCommand extends Command {
             List<TextChannel> channels = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelsByName(splitCommand[1], false);
             if (channels.size() == 0) {
                 mre.getMessage().reply("There was no channel found that matches the given name").mentionRepliedUser(false).queue();
-                return false;
+                return true;
             } else if (channels.size() > 1) {
                 mre.getMessage().reply("This channel name is ambiguous, please provide the channel id").mentionRepliedUser(false).queue();
-                return false;
+                return true;
             }
             relayMessage(mre, channels.get(0), splitCommand[2]);
         }
