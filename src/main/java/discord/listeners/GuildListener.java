@@ -60,6 +60,11 @@ public class GuildListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
+        if (zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByGuild(event.getGuild(), "temporary_channel_allowed")) {
+            if(ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
+                ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
+            }
+        }
         handleAssignment(event.getGuild(), event.getChannelJoined(), event.getMember());
     }
 
