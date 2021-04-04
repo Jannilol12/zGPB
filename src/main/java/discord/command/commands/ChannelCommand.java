@@ -1,6 +1,7 @@
 package discord.command.commands;
 
 import discord.DataHandler;
+import discord.TemporaryChannel;
 import discord.command.Command;
 import discord.command.CommandType;
 import main.zGPB;
@@ -11,30 +12,25 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ChannelCommand extends Command {
 
-    public static final ArrayList<Map.Entry<Long, VoiceChannel>> channelMappings = new ArrayList<>();
-
     public ChannelCommand() {
         super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2, CommandType.GUILD);
     }
 
     public static void deleteUnusedChannels() {
-        List<Long> tempChannels = DataHandler.getTemporaryChannels();
+        Set<TemporaryChannel> tempChannels = DataHandler.getTemporaryChannels();
         if (tempChannels != null) {
-            for (long channelID : tempChannels) {
-                VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
+            for (TemporaryChannel tc : tempChannels) {
+                VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(tc.id());
                 if (currentVoice != null) {
                     if (currentVoice.getMembers().size() == 0) {
-                        DataHandler.removeTemporaryChannel(channelID);
+                        DataHandler.removeTemporaryChannel(tc.id());
                         currentVoice.delete().queue();
                     }
                 }
@@ -61,25 +57,27 @@ public class ChannelCommand extends Command {
 
     public static int getChannelCountByUser(long authorID) {
         int count = 0;
-        for (Map.Entry<Long, VoiceChannel> e : channelMappings) {
-            if (e.getKey() == authorID)
+        for (TemporaryChannel tc : DataHandler.getTemporaryChannels()) {
+            if (tc.owner() == authorID)
                 count++;
         }
         return count;
     }
 
     public static boolean isTemporaryChannel(long channelID) {
-        for (Map.Entry<Long, VoiceChannel> e : channelMappings) {
-            if (e.getValue().getIdLong() == channelID)
+
+        for (TemporaryChannel tc : DataHandler.getTemporaryChannels()) {
+            if (tc.id() == channelID)
                 return true;
         }
+
         return false;
     }
 
     private static VoiceChannel getChannelByUserAndChannel(long authorID, long channelID) {
-        for (Map.Entry<Long, VoiceChannel> e : channelMappings) {
-            if (e.getKey() == authorID && e.getValue().getIdLong() == channelID)
-                return e.getValue();
+        for (TemporaryChannel tc : DataHandler.getTemporaryChannels()) {
+            if (tc.owner() == authorID && tc.id() == channelID)
+                return zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(tc.id());
         }
         return null;
     }
@@ -135,8 +133,7 @@ public class ChannelCommand extends Command {
                 try {
                     category.createVoiceChannel(secondSplit[2]).setUserlimit(size).setBitrate(maxGuildBitrate).
                             queue(channel -> {
-                                channelMappings.add(new AbstractMap.SimpleEntry<>(authorId, channel));
-                                DataHandler.addTemporaryChannel(channel, mre);
+                                 DataHandler.addTemporaryChannel(channel, mre);
                             });
                     mre.getMessage().reply("channel created successfully").mentionRepliedUser(false).queue();
                 } catch (InsufficientPermissionException ipe) {

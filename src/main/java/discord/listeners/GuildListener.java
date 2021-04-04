@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -101,7 +100,6 @@ public class GuildListener extends ListenerAdapter {
                                 setUserlimit(16).setBitrate(guild.getMaxBitrate()).addMemberPermissionOverride(member.getIdLong(),
                                 EnumSet.of(Permission.MANAGE_CHANNEL), null).queue(v -> {
                             DataHandler.addTemporaryChannel(v, member);
-                            ChannelCommand.channelMappings.add(new AbstractMap.SimpleEntry<>(member.getIdLong(), v));
                             guild.moveVoiceMember(member, v).queue();
                         });
                     }
