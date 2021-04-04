@@ -56,7 +56,7 @@ public class ChannelCommand extends Command {
             } else {
                 DataHandler.removeTemporaryChannel(channelID);
             }
-        }, LocalTime.now().until(LocalTime.now().plus(5, ChronoUnit.MINUTES), ChronoUnit.SECONDS), TimeUnit.SECONDS);
+        }, LocalTime.now().until(LocalTime.now().plus(30, ChronoUnit.SECONDS), ChronoUnit.SECONDS), TimeUnit.SECONDS);
     }
 
     public static int getChannelCountByUser(long authorID) {
