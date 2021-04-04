@@ -5,11 +5,11 @@ import discord.command.commands.ChannelCommand;
 import main.Util;
 import main.zGPB;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -58,57 +58,46 @@ public class GuildListener extends ListenerAdapter {
         }
     }
 
-    // TODO: 04/04/2021 deduplicate
     @Override
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
-        if (zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByGuild(event.getGuild(), "temporary_channel_allowed")) {
-            long channelID = zGPB.INSTANCE.configurationHandler.getConfigLongValueForGuildByGuild(event.getGuild(), "temporary_channel_assignment");
-            if (event.getChannelJoined().getIdLong() == channelID) {
-                Category category = event.getGuild().getCategoryById(zGPB.INSTANCE.configurationHandler.
-                        getConfigLongValueForGuildByGuild(event.getGuild(), "temporary_channel_category"));
-                if (category != null) {
-
-                    long maxChannelsPerUser = zGPB.INSTANCE.configurationHandler.getConfigLongValueForGuildByGuild(event.getGuild(), "temporary_channel_max");
-                    if (ChannelCommand.getChannelCountByUser(event.getMember().getIdLong()) >= maxChannelsPerUser) {
-                        zGPB.INSTANCE.discordHandler.getLocalJDA().
-                                retrieveUserById(event.getMember().getId()).queue(u -> u.openPrivateChannel().
-                                queue(p -> p.sendMessage("you are only allowed to create " + maxChannelsPerUser + " voice channels in this guild, try deleting old ones first").queue()));
-                    } else {
-                        category.createVoiceChannel("channel_" + Util.createRandomString(2)).
-                                setUserlimit(16).setBitrate(event.getGuild().getMaxBitrate()).addMemberPermissionOverride(event.getMember().getIdLong(),
-                                EnumSet.of(Permission.MANAGE_CHANNEL), null).queue(v -> {
-                            DataHandler.addTemporaryChannel(v, event.getMember());
-                            ChannelCommand.channelMappings.add(new AbstractMap.SimpleEntry<>(event.getMember().getIdLong(), v));
-                            event.getGuild().moveVoiceMember(event.getMember(), v).queue();
-                        });
-                    }
-                }
-            }
-
-        }
+        handleAssignment(event.getGuild(), event.getChannelJoined(), event.getMember());
     }
 
     @Override
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
+        handleAssignment(event.getGuild(), event.getChannelJoined(), event.getMember());
+    }
+
+    @Override
+    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         if (zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByGuild(event.getGuild(), "temporary_channel_allowed")) {
-            long channelID = zGPB.INSTANCE.configurationHandler.getConfigLongValueForGuildByGuild(event.getGuild(), "temporary_channel_assignment");
-            if (event.getChannelJoined().getIdLong() == channelID) {
-                Category category = event.getGuild().getCategoryById(zGPB.INSTANCE.configurationHandler.
-                        getConfigLongValueForGuildByGuild(event.getGuild(), "temporary_channel_category"));
+            if(ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
+                ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
+            }
+        }
+    }
+
+    // TODO: 04/04/2021 move to better place
+    private void handleAssignment(Guild guild, VoiceChannel channelJoined, Member member) {
+        if (zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByGuild(guild, "temporary_channel_allowed")) {
+            long channelID = zGPB.INSTANCE.configurationHandler.getConfigLongValueForGuildByGuild(guild, "temporary_channel_assignment");
+            if (channelJoined.getIdLong() == channelID) {
+                Category category = guild.getCategoryById(zGPB.INSTANCE.configurationHandler.
+                        getConfigLongValueForGuildByGuild(guild, "temporary_channel_category"));
                 if (category != null) {
 
-                    long maxChannelsPerUser = zGPB.INSTANCE.configurationHandler.getConfigLongValueForGuildByGuild(event.getGuild(), "temporary_channel_max");
-                    if (ChannelCommand.getChannelCountByUser(event.getMember().getIdLong()) >= maxChannelsPerUser) {
+                    long maxChannelsPerUser = zGPB.INSTANCE.configurationHandler.getConfigLongValueForGuildByGuild(guild, "temporary_channel_max");
+                    if (ChannelCommand.getChannelCountByUser(member.getIdLong()) >= maxChannelsPerUser) {
                         zGPB.INSTANCE.discordHandler.getLocalJDA().
-                                retrieveUserById(event.getMember().getId()).queue(u -> u.openPrivateChannel().
+                                retrieveUserById(member.getId()).queue(u -> u.openPrivateChannel().
                                 queue(p -> p.sendMessage("you are only allowed to create " + maxChannelsPerUser + " voice channels in this guild, try deleting old ones first").queue()));
                     } else {
                         category.createVoiceChannel("channel_" + Util.createRandomString(2)).
-                                setUserlimit(16).setBitrate(event.getGuild().getMaxBitrate()).addMemberPermissionOverride(event.getMember().getIdLong(),
+                                setUserlimit(16).setBitrate(guild.getMaxBitrate()).addMemberPermissionOverride(member.getIdLong(),
                                 EnumSet.of(Permission.MANAGE_CHANNEL), null).queue(v -> {
-                            DataHandler.addTemporaryChannel(v, event.getMember());
-                            ChannelCommand.channelMappings.add(new AbstractMap.SimpleEntry<>(event.getMember().getIdLong(), v));
-                            event.getGuild().moveVoiceMember(event.getMember(), v).queue();
+                            DataHandler.addTemporaryChannel(v, member);
+                            ChannelCommand.channelMappings.add(new AbstractMap.SimpleEntry<>(member.getIdLong(), v));
+                            guild.moveVoiceMember(member, v).queue();
                         });
                     }
                 }
@@ -116,4 +105,5 @@ public class GuildListener extends ListenerAdapter {
 
         }
     }
+
 }
