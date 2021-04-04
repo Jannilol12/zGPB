@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
@@ -38,8 +37,6 @@ public class ChannelCommand extends Command {
                         DataHandler.removeTemporaryChannel(channelID);
                         currentVoice.delete().queue();
                     }
-                } else {
-                    DataHandler.removeTemporaryChannel(channelID);
                 }
             }
         }
@@ -59,7 +56,7 @@ public class ChannelCommand extends Command {
             } else {
                 DataHandler.removeTemporaryChannel(channelID);
             }
-        }, LocalDateTime.now().until(LocalTime.now().plus(5, ChronoUnit.MINUTES), ChronoUnit.SECONDS), TimeUnit.SECONDS);
+        }, LocalTime.now().until(LocalTime.now().plus(5, ChronoUnit.MINUTES), ChronoUnit.SECONDS), TimeUnit.SECONDS);
     }
 
     public static int getChannelCountByUser(long authorID) {
