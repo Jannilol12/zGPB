@@ -23,7 +23,7 @@ public class DiscordHandler {
         try {
             localJDA = JDABuilder.createDefault(System.getenv("zGPB_token"))
                     .addEventListeners(new MessageListener(), new GuildListener())
-                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES)
                     .build();
         } catch (LoginException e) {
             Logger.logException(e);
@@ -31,8 +31,9 @@ public class DiscordHandler {
 
         // Create temporary channel cleaner that runs every day at 5 am
         ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-        long timeUntil5AM = LocalTime.now().until(LocalTime.of(3, 38), ChronoUnit.SECONDS);
-        ses.scheduleAtFixedRate(this::cleanTemporaryChannels, timeUntil5AM, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
+        ses.scheduleAtFixedRate(this::cleanTemporaryChannels,
+                LocalTime.now().until(LocalTime.now().plus(1, ChronoUnit.SECONDS), ChronoUnit.SECONDS),
+                TimeUnit.HOURS.toSeconds(1), TimeUnit.SECONDS);
         Logger.logDebugMessage("Started temporary cleanup executor service");
     }
 

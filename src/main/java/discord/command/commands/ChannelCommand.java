@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class ChannelCommand extends Command {
 
-    private static final ArrayList<Map.Entry<Long, VoiceChannel>> channelMappings = new ArrayList<>();
+    public static final ArrayList<Map.Entry<Long, VoiceChannel>> channelMappings = new ArrayList<>();
 
     public ChannelCommand() {
         super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2, CommandType.GUILD);
@@ -39,7 +39,7 @@ public class ChannelCommand extends Command {
         }
     }
 
-    private static int getChannelCountByUser(long authorID) {
+    public static int getChannelCountByUser(long authorID) {
         int count = 0;
         for (Map.Entry<Long, VoiceChannel> e : channelMappings) {
             if (e.getKey() == authorID)

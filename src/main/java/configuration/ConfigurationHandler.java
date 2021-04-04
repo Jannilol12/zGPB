@@ -37,6 +37,9 @@ public class ConfigurationHandler {
         defaultProperties.setProperty("fix_role_change", "false");
         defaultProperties.setProperty("fix_role_add", "");
         defaultProperties.setProperty("fix_role_remove", "no_role");
+        defaultProperties.setProperty("fix_role_auto", "");
+        defaultProperties.setProperty("fix_role_auto_msg", "");
+        defaultProperties.setProperty("temporary_channel_assignment", "-1");
 
         // TODO: Think about using directory that is independent from working direction
         if (!Files.exists(configFolder, LinkOption.NOFOLLOW_LINKS)) {
@@ -126,6 +129,10 @@ public class ConfigurationHandler {
 
     public long getConfigLongValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
         return Long.parseLong(guildPropertyMap.get(mre.getGuild().getIdLong()).getProperty(configKey));
+    }
+
+    public long getConfigLongValueForGuildByGuild(Guild g, String configKey) {
+        return Long.parseLong(guildPropertyMap.get(g.getIdLong()).getProperty(configKey));
     }
 
     public char getConfigCharValueForGuildByEvent(MessageReceivedEvent mre, String configKey) {
