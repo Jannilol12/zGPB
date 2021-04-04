@@ -31,9 +31,8 @@ public class DiscordHandler {
 
         // Create temporary channel cleaner that runs every day at 5 am
         ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-        ses.scheduleAtFixedRate(this::cleanTemporaryChannels,
-                LocalTime.now().until(LocalTime.now().plus(1, ChronoUnit.SECONDS), ChronoUnit.SECONDS),
-                TimeUnit.HOURS.toSeconds(1), TimeUnit.SECONDS);
+        long timeUntil5AM = LocalTime.now().until(LocalTime.of(3, 38), ChronoUnit.SECONDS);
+        ses.scheduleAtFixedRate(this::cleanTemporaryChannels, timeUntil5AM, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
         Logger.logDebugMessage("Started temporary cleanup executor service");
     }
 

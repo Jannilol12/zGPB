@@ -9,10 +9,16 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ChannelCommand extends Command {
 
@@ -28,7 +34,7 @@ public class ChannelCommand extends Command {
             for (long channelID : tempChannels) {
                 VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
                 if (currentVoice != null) {
-                    if(currentVoice.getMembers().size() == 0) {
+                    if (currentVoice.getMembers().size() == 0) {
                         DataHandler.removeTemporaryChannel(channelID);
                         currentVoice.delete().queue();
                     }
@@ -39,6 +45,23 @@ public class ChannelCommand extends Command {
         }
     }
 
+    public static void scheduleChannelDeletion(long channelID) {
+        ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+        ses.schedule(() -> {
+            VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
+            if (currentVoice != null) {
+                if (currentVoice.getMembers().size() == 0) {
+                    DataHandler.removeTemporaryChannel(channelID);
+                    currentVoice.delete().queue();
+                } else {
+                    scheduleChannelDeletion(channelID);
+                }
+            } else {
+                DataHandler.removeTemporaryChannel(channelID);
+            }
+        }, LocalDateTime.now().until(LocalTime.now().plus(5, ChronoUnit.MINUTES), ChronoUnit.SECONDS), TimeUnit.SECONDS);
+    }
+
     public static int getChannelCountByUser(long authorID) {
         int count = 0;
         for (Map.Entry<Long, VoiceChannel> e : channelMappings) {
@@ -46,6 +69,14 @@ public class ChannelCommand extends Command {
                 count++;
         }
         return count;
+    }
+
+    public static boolean isTemporaryChannel(long channelID) {
+        for (Map.Entry<Long, VoiceChannel> e : channelMappings) {
+            if (e.getValue().getIdLong() == channelID)
+                return true;
+        }
+        return false;
     }
 
     private static VoiceChannel getChannelByUserAndChannel(long authorID, long channelID) {
