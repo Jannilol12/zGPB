@@ -24,13 +24,14 @@ public class ConfigCommand extends Command {
                     mentionRepliedUser(false).queue();
         } else {
             if (mre.getMember() == null || !mre.getMember().hasPermission(Permission.MANAGE_ROLES)) {
-                mre.getMessage().reply("insufficient permissions").mentionRepliedUser(false).queue();
+                mre.getMessage().reply("insufficient permissions, MANAGE_ROLES needed").mentionRepliedUser(false).queue();
+                return true;
             }
 
             String[] keyValueSplit = splitCommand[1].split("=");
             if (keyValueSplit.length <= 1) {
                 mre.getMessage().reply("wrong syntax: `" + usage + "`").mentionRepliedUser(false).queue();
-                return false;
+                return true;
             }
             zGPB.INSTANCE.configurationHandler.setConfigValueForGuild(mre, keyValueSplit[0], keyValueSplit[1]);
             mre.getMessage().reply("successfully set config value").mentionRepliedUser(false).queue();
