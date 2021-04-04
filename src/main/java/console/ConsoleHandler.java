@@ -23,7 +23,7 @@ public class ConsoleHandler {
                 else if(currentLine.equals("backup"))
                     zGPB.INSTANCE.databaseHandler.executeStatement("BACKUP TO data.db");
                 else
-                    System.out.println(zGPB.INSTANCE.databaseHandler.getResultFromQuery(currentLine, false));
+                    zGPB.INSTANCE.databaseHandler.executeStatement(currentLine);
             }
 
         }).start();
