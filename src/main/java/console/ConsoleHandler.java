@@ -16,8 +16,6 @@ public class ConsoleHandler {
 
                 if (currentLine.equals("quit"))
                     System.exit(0);
-                else if (currentLine.equals("dump"))
-                    zGPB.INSTANCE.databaseHandler.dumpDatabase();
                 else if (currentLine.equals("dimd"))
                     zGPB.INSTANCE.gradeListener.isEnabled = false;
                 else if(currentLine.equals("backup"))
