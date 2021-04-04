@@ -94,7 +94,10 @@ public class GuildListener extends ListenerAdapter {
                     if (ChannelCommand.getChannelCountByUser(member.getIdLong()) >= maxChannelsPerUser) {
                         zGPB.INSTANCE.discordHandler.getLocalJDA().
                                 retrieveUserById(member.getId()).queue(u -> u.openPrivateChannel().
-                                queue(p -> p.sendMessage("you are only allowed to create " + maxChannelsPerUser + " voice channels in this guild, try deleting old ones first").queue()));
+                                queue(p -> {
+                                    p.sendMessage("you are only allowed to create " + maxChannelsPerUser + " voice channels in this guild, try deleting old ones first").queue();
+                                    guild.kickVoiceMember(member).queue();
+                                }));
                     } else {
                         category.createVoiceChannel("channel_" + Util.createRandomString(2)).
                                 setUserlimit(16).setBitrate(guild.getMaxBitrate()).addMemberPermissionOverride(member.getIdLong(),

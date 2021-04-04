@@ -23,7 +23,7 @@ public class ConfigCommand extends Command {
                     ("json", zGPB.INSTANCE.configurationHandler.getPropertiesAsString(mre.getGuild().getIdLong()))).
                     mentionRepliedUser(false).queue();
         } else {
-            if (!mre.getGuild().getMemberById(mre.getAuthor().getIdLong()).hasPermission(Permission.MANAGE_ROLES)) {
+            if (mre.getMember() == null || !mre.getMember().hasPermission(Permission.MANAGE_ROLES)) {
                 mre.getMessage().reply("insufficient permissions").mentionRepliedUser(false).queue();
             }
 
