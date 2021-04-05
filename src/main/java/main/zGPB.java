@@ -22,7 +22,7 @@ public class zGPB {
     public final ReminderHandler reminderHandler;
 
     public zGPB() {
-        Logger.logDebugMessage("reached pre init");
+        Logger.logDebugMessage("Reached pre init");
         configurationHandler = new ConfigurationHandler();
         commandHandler = new CommandHandler();
         databaseHandler = new DatabaseHandler();
@@ -37,14 +37,14 @@ public class zGPB {
     }
 
     private void init() {
-        Logger.logDebugMessage("reached init");
+        Logger.logDebugMessage("Reached init");
         Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
 
         databaseHandler.initiateDatabase();
         discordHandler.createConnection();
         consoleHandler.checkInput();
 
-        Logger.logDebugMessage("reached post init");
+        Logger.logDebugMessage("Reached post init");
         reminderHandler.registerOldReminders();
     }
 

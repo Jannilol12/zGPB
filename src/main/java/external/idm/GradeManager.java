@@ -30,29 +30,28 @@ public class GradeManager {
     private final String EXAM_PAGE_URL = "https://www.campus.uni-erlangen.de/qisserver/rds?state=template&template=pruefungen";
     // Exam data can be retrieved here
     private final String EXAM_VIEW_URL = "https://www.campus.uni-erlangen.de/qisserver/rds?state=notenspiegelStudent&next=list.vm&nextdir=qispos/notenspiegel/student&createInfos=Y&struct=auswahlBaum&nodeID=auswahlBaum|abschluss:abschl=55,stg=079,abschlBE=&expand=0";
+
+    public boolean isEnabled = true;
+    public boolean insertTest = false;
+
+    // Non network related
     // Determine ASI value to retrieve exam data
     private String GRADE_PAGE_URL;
     private String ASI;
-
-    // Non network related
-
-    public boolean isEnabled = false;
-    public boolean insertTest = false;
-
     private Set<GradeEntry> current;
-    private boolean successfulInit = false;
+    private boolean initAndMsg = false;
 
     public GradeManager() {
-        if (isEnabled) {
-            if (initializeCampusConnection()) {
-                current = Collections.emptySet();
-                successfulInit = true;
-                waitForResults();
-            } else {
-                Logger.logException("Couldn't initialize campus connection");
-            }
-
+        if (initializeCampusConnection()) {
+            current = Collections.emptySet();
+            initAndMsg = true;
+            Logger.logDebugMessage("GradeManager: isEnabled=" + isEnabled + "; initAndMsg=" + initAndMsg);
+            waitForResults();
+        } else {
+            Logger.logException("Couldn't initialize campus connection");
+            Logger.logDebugMessage("GradeManager: isEnabled=" + isEnabled + "; initAndMsg=" + initAndMsg);
         }
+
     }
 
     public boolean initializeCampusConnection() {
@@ -153,44 +152,52 @@ public class GradeManager {
     public void waitForResults() {
         new Thread(() -> {
             while (true) {
-
-                if (!isEnabled)
-                    return;
-
-                if (!successfulInit)
-                    return;
-
                 try {
-                    Logger.logDebugMessage("Fetching new grades");
-                    Set<GradeEntry> newEntries = Objects.requireNonNull(getGradesFromMyCampus());
+                    if (isEnabled) {
+                        Logger.logDebugMessage("Fetching new grades");
+                        Set<GradeEntry> newEntries = Objects.requireNonNull(getGradesFromMyCampus());
 
-                    if (newEntries.size() != current.size()) {
-                        Set<GradeEntry> tempCopy = new HashSet<>(newEntries);
-                        newEntries.removeAll(current);
-
-                        for (long channelID : zGPB.INSTANCE.configurationHandler.getChannelsForGradeNotification()) {
-                            TextChannel tc = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(channelID);
-
-                            if (tc != null) {
-                                for (GradeEntry ge : newEntries) {
-                                    tc.sendMessage(MessageCrafter.craftGenericEmbedMessage("exam got updated",
-                                            new EmbedField("name", ge.name(), false),
-                                            new EmbedField("semester", ge.semester(), false),
-                                            new EmbedField("id", ge.id(), true),
-                                            new EmbedField("date", ge.date(), true),
-                                            new EmbedField("ects", ge.ects(), true)
-                                    )).queue();
-                                }
-                            } else {
-                                Logger.logException("channel couldn't be found");
-                            }
-
+                        if (insertTest) {
+                            newEntries.add(
+                                    new GradeEntry(
+                                            "00000", "test_exam", "WS 00/00", "01.01.1900", "1.0",
+                                            "111", "yes", "10", "+", "1"));
+                            insertTest = false;
                         }
 
-                        current = tempCopy;
+                        if (newEntries.size() != current.size()) {
+                            Set<GradeEntry> tempCopy = new HashSet<>(newEntries);
+                            newEntries.removeAll(current);
+
+                            if (!initAndMsg) {
+                                for (long channelID : zGPB.INSTANCE.configurationHandler.getChannelsForGradeNotification()) {
+                                    TextChannel tc = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(channelID);
+
+                                    if (tc != null) {
+                                        for (GradeEntry ge : newEntries) {
+                                            tc.sendMessage(MessageCrafter.craftGenericEmbedMessage("exam update",
+                                                    new EmbedField("name", ge.name(), false),
+                                                    new EmbedField("semester", ge.semester(), false),
+                                                    new EmbedField("id", ge.id(), true),
+                                                    new EmbedField("date", ge.date(), true),
+                                                    new EmbedField("ects", ge.ects(), true)
+                                            )).queue();
+                                        }
+                                    } else {
+                                        Logger.logException("channel couldn't be found");
+                                    }
+
+                                }
+                            }
+
+                            initAndMsg = false;
+                            current = tempCopy;
+                        }
+                    } else {
+                        Logger.logDebugMessage("Not enabled, waiting");
                     }
 
-                    TimeUnit.MINUTES.sleep(10);
+                    TimeUnit.MINUTES.sleep(2);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -20,10 +20,10 @@ public class ConsoleHandler {
                 else if (currentLine.equals("dimd")) {
                     zGPB.INSTANCE.gradeManager.isEnabled = !zGPB.INSTANCE.gradeManager.isEnabled;
                     Logger.logDebugMessage("grade manager: " + zGPB.INSTANCE.gradeManager.isEnabled);
-                } else if(currentLine.equals("testgrade")) {
-
-                }
-                else if(currentLine.equals("backup"))
+                } else if (currentLine.equals("testgrade")) {
+                    zGPB.INSTANCE.gradeManager.insertTest = true;
+                    Logger.logDebugMessage("testing grade notifications");
+                } else if (currentLine.equals("backup"))
                     zGPB.INSTANCE.databaseHandler.executeStatement("BACKUP TO data.db");
                 else
                     zGPB.INSTANCE.databaseHandler.executeStatement(currentLine);

@@ -16,7 +16,7 @@ public class MessageCrafter {
     public static MessageEmbed craftGenericEmbedMessage(String title, EmbedField... fields) {
         EmbedBuilder eb = new EmbedBuilder();
 
-        eb.setColor(Color.CYAN);
+        eb.setColor(new Color(100, 255, 80));
         eb.setTimestamp(Instant.now());
         eb.setFooter("zGBP");
         eb.setTitle(title);
