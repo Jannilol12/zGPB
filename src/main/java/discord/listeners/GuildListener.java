@@ -20,7 +20,7 @@ public class GuildListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleAdd(@NotNull GuildMemberRoleAddEvent event) {
-        DataHandler.handleRoleFix(event);
+        DataHandler.handleRoleFixOnRoleAdd(event);
     }
 
     @Override
