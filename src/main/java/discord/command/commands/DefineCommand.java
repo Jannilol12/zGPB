@@ -1,11 +1,11 @@
 package discord.command.commands;
 
-import network.DictionaryEntry;
 import discord.EmbedField;
 import discord.MessageCrafter;
 import discord.command.Command;
+import external.dict.DictionaryEntry;
+import external.dict.DictionaryManager;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import network.NetworkUtil;
 
 public class DefineCommand extends Command {
 
@@ -18,7 +18,15 @@ public class DefineCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        DictionaryEntry highest = NetworkUtil.getDefinitionForWord(splitCommand[1]);
+        if (splitCommand.length < 2) {
+            return true;
+        }
+        if (splitCommand.length == 2 && splitCommand[1].length() < 2) {
+            mre.getMessage().reply("term needs to be longer than that").mentionRepliedUser(false).queue();
+            return true;
+        }
+
+        DictionaryEntry highest = DictionaryManager.getDefinitionForWord(givenCommand.split(" ", 2)[1]);
         if (highest == null) {
             mre.getMessage().reply("couldn't resolve the given term").mentionRepliedUser(false).queue();
         } else {

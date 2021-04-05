@@ -5,7 +5,7 @@ import console.ConsoleHandler;
 import database.DatabaseHandler;
 import discord.DiscordHandler;
 import discord.command.CommandHandler;
-import external.GradeListener;
+import external.idm.GradeManager;
 import log.Logger;
 import timing.ReminderHandler;
 
@@ -18,7 +18,7 @@ public class zGPB {
     public final DatabaseHandler databaseHandler;
     public final DiscordHandler discordHandler;
     public final ConsoleHandler consoleHandler;
-    public final GradeListener gradeListener;
+    public final GradeManager gradeManager;
     public final ReminderHandler reminderHandler;
 
     public zGPB() {
@@ -28,7 +28,7 @@ public class zGPB {
         databaseHandler = new DatabaseHandler();
         discordHandler = new DiscordHandler();
         consoleHandler = new ConsoleHandler();
-        gradeListener = new GradeListener();
+        gradeManager = new GradeManager();
         reminderHandler = new ReminderHandler();
     }
 
