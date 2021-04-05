@@ -197,7 +197,7 @@ public class GradeManager {
                         Logger.logDebugMessage("Not enabled, waiting");
                     }
 
-                    TimeUnit.MINUTES.sleep(2);
+                    TimeUnit.MINUTES.sleep(15);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
