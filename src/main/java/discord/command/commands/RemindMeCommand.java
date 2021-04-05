@@ -1,6 +1,6 @@
 package discord.command.commands;
 
-import discord.DataHandler;
+import database.DataHandler;
 import discord.command.Command;
 import discord.command.CommandType;
 import main.zGPB;

@@ -1,6 +1,6 @@
 package discord.listeners;
 
-import discord.DataHandler;
+import database.DataHandler;
 import discord.command.commands.ChannelCommand;
 import main.zGPB;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;

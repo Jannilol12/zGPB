@@ -1,7 +1,7 @@
 package discord.command.commands;
 
-import discord.DataHandler;
-import discord.TemporaryChannel;
+import database.DataHandler;
+import database.TemporaryChannel;
 import discord.command.Command;
 import discord.command.CommandType;
 import main.zGPB;

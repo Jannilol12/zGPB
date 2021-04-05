@@ -1,4 +1,4 @@
-package discord;
+package network;
 
 public record DictionaryEntry(String definition, String example, String author, String url, int thumbsUp,
                               int thumbsDown, String date) {

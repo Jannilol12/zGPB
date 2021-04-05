@@ -1,6 +1,6 @@
 package discord.command.commands;
 
-import discord.DictionaryEntry;
+import network.DictionaryEntry;
 import discord.EmbedField;
 import discord.MessageCrafter;
 import discord.command.Command;

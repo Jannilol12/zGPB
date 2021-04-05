@@ -1,6 +1,6 @@
 package timing;
 
-import discord.DataHandler;
+import database.DataHandler;
 import log.Logger;
 import main.zGPB;
 
