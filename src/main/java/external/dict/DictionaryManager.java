@@ -38,7 +38,7 @@ public class DictionaryManager {
                 if ((float) tu / td > (currentMax == null ? 0 : (float) currentMax.thumbsUp() / currentMax.thumbsDown())) {
                     currentMax = new DictionaryEntry(
                             (String) cur.get("definition"), (String) cur.get("example"), (String) cur.get("author"),
-                            System.getenv("zGPB_urban_main").replace("[X]", word), Math.toIntExact((Long) cur.get("thumbs_up")),
+                            System.getenv("zGPB_urban_main").replace("[X]", NetworkUtil.transformToHTMLString(word)), Math.toIntExact((Long) cur.get("thumbs_up")),
                             Math.toIntExact((Long) cur.get("thumbs_down")), (String) cur.get("written_on"));
                 }
             }

@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 public class GradeManager {
 
+    // Network related
+
     private final String IDM_USERNAME = System.getenv("zGPB_idm_username");
     private final String IDM_PASSWORD = System.getenv("zGPB_idm_password");
     private final String AUTH_STATE_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/Login";
@@ -28,10 +30,15 @@ public class GradeManager {
     private final String EXAM_PAGE_URL = "https://www.campus.uni-erlangen.de/qisserver/rds?state=template&template=pruefungen";
     // Exam data can be retrieved here
     private final String EXAM_VIEW_URL = "https://www.campus.uni-erlangen.de/qisserver/rds?state=notenspiegelStudent&next=list.vm&nextdir=qispos/notenspiegel/student&createInfos=Y&struct=auswahlBaum&nodeID=auswahlBaum|abschluss:abschl=55,stg=079,abschlBE=&expand=0";
-    public boolean isEnabled = false;
     // Determine ASI value to retrieve exam data
     private String GRADE_PAGE_URL;
     private String ASI;
+
+    // Non network related
+
+    public boolean isEnabled = false;
+    public boolean insertTest = false;
+
     private Set<GradeEntry> current;
     private boolean successfulInit = false;
 
