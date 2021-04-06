@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 public class GradeManager {
 
     // Network related
-
     private final String IDM_USERNAME = System.getenv("zGPB_idm_username");
     private final String IDM_PASSWORD = System.getenv("zGPB_idm_password");
     private final String AUTH_STATE_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/Login";
@@ -42,6 +41,13 @@ public class GradeManager {
     private boolean initAndMsg = false;
 
     public GradeManager() {
+        startMonitoring();
+    }
+
+    public void startMonitoring() {
+        GRADE_PAGE_URL = null;
+        current = null;
+        ASI = null;
         if (initializeCampusConnection()) {
             current = Collections.emptySet();
             initAndMsg = true;
@@ -51,7 +57,6 @@ public class GradeManager {
             Logger.logException("Couldn't initialize campus connection");
             Logger.logDebugMessage("GradeManager: isEnabled=" + isEnabled + "; initAndMsg=" + initAndMsg);
         }
-
     }
 
     public boolean initializeCampusConnection() {
@@ -151,7 +156,12 @@ public class GradeManager {
 
     public void waitForResults() {
         new Thread(() -> {
+            boolean exception = false;
             while (true) {
+                if (exception) {
+                    Logger.logException("stopping, errors detected");
+                    return;
+                }
                 try {
                     if (isEnabled) {
                         Logger.logDebugMessage("Fetching new grades");
@@ -170,7 +180,7 @@ public class GradeManager {
                             newEntries.removeAll(current);
 
                             if (!initAndMsg) {
-                                for (long channelID : zGPB.INSTANCE.configurationHandler.getChannelsForGradeNotification()) {
+                                for (long channelID : zGPB.INSTANCE.guildConfigurationHandler.getIDsForKey("grade_notification")) {
                                     TextChannel tc = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(channelID);
 
                                     if (tc != null) {
@@ -200,6 +210,7 @@ public class GradeManager {
                     TimeUnit.MINUTES.sleep(15);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    exception = true;
                 }
             }
         }).start();
