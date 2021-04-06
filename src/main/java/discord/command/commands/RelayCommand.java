@@ -42,7 +42,7 @@ public class RelayCommand extends Command {
 
     private void relayMessage(MessageReceivedEvent mre, TextChannel channel, String message) {
 
-        if (!zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByChannel(channel, "allow_message_relay")) {
+        if (!zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(channel.getGuild().getIdLong(), "allow_message_relay")) {
             mre.getMessage().reply("This guild does not allow relaying messages").mentionRepliedUser(false).queue();
             return;
         }

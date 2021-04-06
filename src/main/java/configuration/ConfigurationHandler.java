@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.Set;
 
 // TODO: 01/04/2021 redo configuration to ensure types
+@Deprecated
 public class ConfigurationHandler {
 
     private final Path configFolder = Path.of("config/");

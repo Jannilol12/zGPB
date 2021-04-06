@@ -87,8 +87,8 @@ public class ChannelCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        Category category = mre.getGuild().getCategoryById(zGPB.INSTANCE.configurationHandler.
-                getConfigLongValueForGuildByEvent(mre, "temporary_channel_category"));
+        Category category = mre.getGuild().getCategoryById(zGPB.INSTANCE.guildConfigurationHandler.
+                getConfigLong(mre, "temporary_channel_category"));
         if (category == null) {
             mre.getMessage().reply("this guild does not have a temporary channel category set").mentionRepliedUser(false).queue();
             return true;
@@ -125,7 +125,7 @@ public class ChannelCommand extends Command {
         switch (splitCommand[1]) {
             case "create" -> {
                 int maxGuildBitrate = mre.getGuild().getMaxBitrate();
-                int maxChannelsPerUser = zGPB.INSTANCE.configurationHandler.getConfigIntValueForGuildByEvent(mre, "temporary_channel_max");
+                long maxChannelsPerUser = zGPB.INSTANCE.guildConfigurationHandler.getConfigLong(mre, "temporary_channel_max");
                 if (getChannelCountByUser(authorId) >= maxChannelsPerUser) {
                     mre.getMessage().reply("you are only allowed to create " + maxChannelsPerUser + " channels").mentionRepliedUser(false).queue();
                     return true;

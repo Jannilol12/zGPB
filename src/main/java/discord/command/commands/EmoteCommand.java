@@ -24,7 +24,7 @@ public class EmoteCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        if (!zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByEvent(mre, "emote_enabled")) {
+        if (!zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(mre, "emote_enabled")) {
             mre.getMessage().reply("this guild does not support adding emotes").mentionRepliedUser(false).queue();
             return true;
         }

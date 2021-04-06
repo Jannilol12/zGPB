@@ -15,7 +15,7 @@ public class GuildListener extends ListenerAdapter {
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
-        zGPB.INSTANCE.configurationHandler.createGuildProperties(event.getGuild().getIdLong());
+        zGPB.INSTANCE.guildConfigurationHandler.updateGuild(event.getGuild().getIdLong());
     }
 
     @Override
@@ -25,8 +25,8 @@ public class GuildListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
-        if (zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByGuild(event.getGuild(), "temporary_channel_allowed")) {
-            if(ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
+        if (zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(event.getGuild(), "temporary_channel_allowed")) {
+            if (ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
                 ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
             }
         }
@@ -40,8 +40,8 @@ public class GuildListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
-        if (zGPB.INSTANCE.configurationHandler.getConfigBooleanValueForGuildByGuild(event.getGuild(), "temporary_channel_allowed")) {
-            if(ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
+        if (zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(event.getGuild(), "temporary_channel_allowed")) {
+            if (ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
                 ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
             }
         }

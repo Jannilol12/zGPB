@@ -69,7 +69,7 @@ public class CommandHandler {
 
     private boolean isValidPrefix(char localPrefix, MessageReceivedEvent mre) {
         if (mre.isFromGuild())
-            return localPrefix == zGPB.INSTANCE.configurationHandler.getConfigCharValueForGuildByEvent(mre, "prefix");
+            return localPrefix == zGPB.INSTANCE.guildConfigurationHandler.getConfigString(mre, "prefix").charAt(0);
         return localPrefix == PREFIX;
     }
 
