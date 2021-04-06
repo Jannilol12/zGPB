@@ -1,6 +1,6 @@
 package main;
 
-import configuration.ConfigurationHandler;
+import configuration.GuildConfigurationHandler;
 import console.ConsoleHandler;
 import database.DatabaseHandler;
 import discord.DiscordHandler;
@@ -13,9 +13,9 @@ public class zGPB {
 
     public static final zGPB INSTANCE = new zGPB();
 
-    public final ConfigurationHandler configurationHandler;
     public final CommandHandler commandHandler;
     public final DatabaseHandler databaseHandler;
+    public final GuildConfigurationHandler guildConfigurationHandler;
     public final DiscordHandler discordHandler;
     public final ConsoleHandler consoleHandler;
     public final GradeManager gradeManager;
@@ -23,9 +23,9 @@ public class zGPB {
 
     public zGPB() {
         Logger.logDebugMessage("Reached pre init");
-        configurationHandler = new ConfigurationHandler();
-        commandHandler = new CommandHandler();
         databaseHandler = new DatabaseHandler();
+        guildConfigurationHandler = new GuildConfigurationHandler();
+        commandHandler = new CommandHandler();
         discordHandler = new DiscordHandler();
         consoleHandler = new ConsoleHandler();
         gradeManager = new GradeManager();
@@ -50,9 +50,9 @@ public class zGPB {
 
     private void shutdown() {
         Logger.logDebugMessage("Shutdown initiated");
+        guildConfigurationHandler.saveConfig();
         discordHandler.getLocalJDA().shutdown();
         databaseHandler.closeDatabaseConnection();
-        configurationHandler.saveProperties();
     }
 
 }
