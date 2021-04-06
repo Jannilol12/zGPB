@@ -20,8 +20,22 @@ dependencies {
     compile 'org.jsoup:jsoup:1.13.1'
 }
 
-compileJava {
-    options.compilerArgs += ["--enable-preview"]
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
+}
+
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
+}
+
+test {
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
 }
 
 jar {
