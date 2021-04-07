@@ -27,7 +27,7 @@ public class GuildListener extends ListenerAdapter {
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
         if (zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(event.getGuild(), "temporary_channel_allowed")) {
             if (ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
-                ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
+                ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong(), true);
             }
         }
         DataHandler.handleAssignment(event.getGuild(), event.getChannelJoined(), event.getMember());
@@ -42,7 +42,7 @@ public class GuildListener extends ListenerAdapter {
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         if (zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(event.getGuild(), "temporary_channel_allowed")) {
             if (ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
-                ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
+                ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong(), true);
             }
         }
     }

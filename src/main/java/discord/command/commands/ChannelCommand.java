@@ -38,7 +38,7 @@ public class ChannelCommand extends Command {
         }
     }
 
-    public static void scheduleChannelDeletion(long channelID) {
+    public static void scheduleChannelDeletion(long channelID, boolean repeat) {
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
         ses.schedule(() -> {
             VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
@@ -47,7 +47,8 @@ public class ChannelCommand extends Command {
                     DataHandler.removeTemporaryChannel(channelID);
                     currentVoice.delete().queue();
                 } else {
-                    scheduleChannelDeletion(channelID);
+                    if(repeat)
+                        scheduleChannelDeletion(channelID, true);
                 }
             } else {
                 DataHandler.removeTemporaryChannel(channelID);
