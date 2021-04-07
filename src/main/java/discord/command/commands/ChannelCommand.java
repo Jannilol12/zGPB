@@ -8,7 +8,9 @@ import main.zGPB;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -45,9 +47,10 @@ public class ChannelCommand extends Command {
             if (currentVoice != null) {
                 if (currentVoice.getMembers().size() == 0) {
                     DataHandler.removeTemporaryChannel(channelID);
-                    currentVoice.delete().queue();
+                    currentVoice.delete().queue(s -> {
+                    }, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_CHANNEL));
                 } else {
-                    if(repeat)
+                    if (repeat)
                         scheduleChannelDeletion(channelID, true);
                 }
             } else {
@@ -134,7 +137,7 @@ public class ChannelCommand extends Command {
                 try {
                     category.createVoiceChannel(secondSplit[2]).setUserlimit(size).setBitrate(maxGuildBitrate).
                             queue(channel -> {
-                                 DataHandler.addTemporaryChannel(channel, mre);
+                                DataHandler.addTemporaryChannel(channel, mre);
                             });
                     mre.getMessage().reply("channel created successfully").mentionRepliedUser(false).queue();
                 } catch (InsufficientPermissionException ipe) {
