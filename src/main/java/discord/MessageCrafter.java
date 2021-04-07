@@ -21,8 +21,12 @@ public class MessageCrafter {
         eb.setFooter("zGBP");
         eb.setTitle(title);
 
-        for (EmbedField ef : fields)
-            eb.addField(ef.key(), ef.value(), ef.inline());
+        for (EmbedField ef : fields) {
+            String v = ef.value();
+            if (v.length() > 1024)
+                v = v.substring(0, 1019) + "[...]";
+            eb.addField(ef.key(), v, ef.inline());
+        }
 
         return eb.build();
     }
