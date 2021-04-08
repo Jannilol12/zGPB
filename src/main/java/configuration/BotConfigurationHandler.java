@@ -35,7 +35,6 @@ public class BotConfigurationHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            defaults.forEach((k, v) -> config.putIfAbsent(k, v));
         } else {
             try (final FileInputStream fis = new FileInputStream(configFile)) {
                 config.load(fis);
@@ -43,6 +42,8 @@ public class BotConfigurationHandler {
                 e.printStackTrace();
             }
         }
+        // fill up new values
+        defaults.forEach((k, v) -> config.putIfAbsent(k, v));
     }
 
     public String getConfigValue(String key) {

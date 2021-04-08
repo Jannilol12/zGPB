@@ -163,7 +163,7 @@ public class GradeManager {
                 }
                 try {
                     if (isEnabled) {
-                        Logger.logDebugMessage("Fetching new grades");
+                        Logger.logDebugMessage("Fetching new grades, old size: " + current.size());
                         Set<GradeEntry> newEntries = Objects.requireNonNull(getGradesFromMyCampus());
 
                         if (insertTest) {
@@ -202,8 +202,6 @@ public class GradeManager {
                             initAndMsg = false;
                             current = tempCopy;
                         }
-                    } else {
-                        Logger.logDebugMessage("Not enabled, waiting");
                     }
 
                     TimeUnit.MINUTES.sleep(zGPB.INSTANCE.botConfigurationHandler.getConfigValueInteger("zGPB_idm_refresh"));
