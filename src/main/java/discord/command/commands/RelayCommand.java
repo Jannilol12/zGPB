@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 
 public class RelayCommand extends PrivateCommand {
@@ -51,7 +52,7 @@ public class RelayCommand extends PrivateCommand {
         } else {
             channel.sendMessage(
                     new EmbedBuilder().addField("Message relay", message, true).setAuthor("Anonymous").
-                            setTimestamp(Instant.now()).setFooter(Util.createRandomString(8)).build()).
+                            setTimestamp(Instant.now().atZone(ZoneId.systemDefault())).setFooter(Util.createRandomString(8)).build()).
                     queue();
         }
     }

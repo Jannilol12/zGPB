@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Set;
 
 public class MessageCrafter {
@@ -17,7 +18,7 @@ public class MessageCrafter {
         EmbedBuilder eb = new EmbedBuilder();
 
         eb.setColor(new Color(100, 255, 80));
-        eb.setTimestamp(Instant.now());
+        eb.setTimestamp(Instant.now().atZone(ZoneId.systemDefault()));
         eb.setFooter("zGBP");
         eb.setTitle(title);
 
