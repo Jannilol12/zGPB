@@ -2,8 +2,7 @@ package discord.command.commands;
 
 import database.DataHandler;
 import database.TemporaryChannel;
-import discord.command.Command;
-import discord.command.CommandType;
+import discord.command.GuildCommand;
 import main.zGPB;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -19,10 +18,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ChannelCommand extends Command {
+public class ChannelCommand extends GuildCommand {
 
     public ChannelCommand() {
-        super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2, CommandType.GUILD);
+        super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2);
     }
 
     public static void deleteUnusedChannels() {
@@ -87,6 +86,7 @@ public class ChannelCommand extends Command {
     }
 
     @Override
+    @Deprecated
     protected boolean onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;

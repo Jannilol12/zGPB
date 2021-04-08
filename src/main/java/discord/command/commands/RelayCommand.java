@@ -1,9 +1,8 @@
 package discord.command.commands;
 
-import discord.command.Command;
-import discord.command.CommandType;
-import main.zGPB;
+import discord.command.PrivateCommand;
 import main.Util;
+import main.zGPB;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -11,10 +10,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.time.Instant;
 import java.util.List;
 
-public class RelayCommand extends Command {
+public class RelayCommand extends PrivateCommand {
 
     public RelayCommand() {
-        super("relay", "relay <channel_name | channel_id> message", "relays a message to a given channel", 2, CommandType.PRIVATE);
+        super("relay", "relay <channel_name | channel_id> message", "relays a message to a given channel", 2);
     }
 
     @Override

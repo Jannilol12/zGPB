@@ -1,7 +1,6 @@
 package discord.command.commands;
 
-import discord.command.Command;
-import discord.command.CommandType;
+import discord.command.GuildCommand;
 import main.zGPB;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
@@ -13,10 +12,10 @@ import network.NetworkUtil;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class EmoteCommand extends Command {
+public class EmoteCommand extends GuildCommand {
 
     public EmoteCommand() {
-        super("emote", "emote <name>", "adds the emote that is attached to the corresponding message", 2, CommandType.GUILD);
+        super("emote", "emote <name>", "adds the emote that is attached to the corresponding message", 2);
     }
 
     @Override

@@ -2,7 +2,6 @@ package discord.command.commands;
 
 import database.DataHandler;
 import discord.command.Command;
-import discord.command.CommandType;
 import main.zGPB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import timing.Event;
@@ -14,7 +13,7 @@ import java.time.LocalTime;
 public class RemindMeCommand extends Command {
 
     public RemindMeCommand() {
-        super("remindme", "remindme <x (y/M/w/d/h/m/s) / yyyy-MM-dd.hh:mm:ss>", "reminds you at the given time", 2, CommandType.BOTH);
+        super("remindme", "remindme <x (y/M/w/d/h/m/s) / yyyy-MM-dd.hh:mm:ss>", "reminds you at the given time", 2);
     }
 
     @Override
