@@ -46,6 +46,7 @@ public class zGPB {
         databaseHandler.initiateDatabase();
         discordHandler.createConnection();
         consoleHandler.checkInput();
+        gradeManager.startMonitoring();
 
         Logger.logDebugMessage("Reached post init");
         reminderHandler.registerOldReminders();

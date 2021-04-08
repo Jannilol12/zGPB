@@ -18,21 +18,18 @@ import java.util.concurrent.TimeUnit;
 
 public class GradeManager {
 
-    // Network related
-    private final String IDM_USERNAME = zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_idm_username");
-    private final String IDM_PASSWORD = zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_idm_password");
     private final String AUTH_STATE_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/Login";
     private final String OAUTH_URL = "https://www.sso.uni-erlangen.de/simplesaml/module.php/core/loginuserpass.php?";
     private final String SAML_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/SAML2/POST";
-
     // Overview page we use to determine GRADE_PAGE_URL
     private final String EXAM_PAGE_URL = "https://www.campus.uni-erlangen.de/qisserver/rds?state=template&template=pruefungen";
     // Exam data can be retrieved here
     private final String EXAM_VIEW_URL = "https://www.campus.uni-erlangen.de/qisserver/rds?state=notenspiegelStudent&next=list.vm&nextdir=qispos/notenspiegel/student&createInfos=Y&struct=auswahlBaum&nodeID=auswahlBaum|abschluss:abschl=55,stg=079,abschlBE=&expand=0";
-
     public boolean isEnabled = true;
     public boolean insertTest = false;
-
+    // Network related
+    private String IDM_USERNAME;
+    private String IDM_PASSWORD;
     // Non network related
     // Determine ASI value to retrieve exam data
     private String GRADE_PAGE_URL;
@@ -40,13 +37,12 @@ public class GradeManager {
     private Set<GradeEntry> current;
     private boolean initAndMsg = false;
 
-    public GradeManager() {
-        startMonitoring();
-    }
-
     public void startMonitoring() {
         if (!zGPB.INSTANCE.botConfigurationHandler.getConfigValueBoolean("zGPB_idm_enabled"))
             return;
+
+        IDM_USERNAME = zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_idm_username");
+        IDM_PASSWORD = zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_idm_password");
 
         GRADE_PAGE_URL = null;
         current = null;
@@ -210,7 +206,7 @@ public class GradeManager {
                         Logger.logDebugMessage("Not enabled, waiting");
                     }
 
-                    TimeUnit.MINUTES.sleep(15);
+                    TimeUnit.MINUTES.sleep(zGPB.INSTANCE.botConfigurationHandler.getConfigValueInteger("zGPB_idm_refresh"));
                 } catch (Exception e) {
                     e.printStackTrace();
                     exception = true;
