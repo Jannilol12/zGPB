@@ -4,6 +4,7 @@ import discord.command.commands.ChannelCommand;
 import discord.listeners.GuildListener;
 import discord.listeners.MessageListener;
 import log.Logger;
+import main.zGPB;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -21,7 +22,7 @@ public class DiscordHandler {
 
     public void createConnection() {
         try {
-            localJDA = JDABuilder.createDefault(System.getenv("zGPB_token"))
+            localJDA = JDABuilder.createDefault(zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_token"))
                     .addEventListeners(new MessageListener(), new GuildListener())
                     .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES)
                     .build();

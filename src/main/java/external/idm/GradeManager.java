@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 public class GradeManager {
 
     // Network related
-    private final String IDM_USERNAME = System.getenv("zGPB_idm_username");
-    private final String IDM_PASSWORD = System.getenv("zGPB_idm_password");
+    private final String IDM_USERNAME = zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_idm_username");
+    private final String IDM_PASSWORD = zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_idm_password");
     private final String AUTH_STATE_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/Login";
     private final String OAUTH_URL = "https://www.sso.uni-erlangen.de/simplesaml/module.php/core/loginuserpass.php?";
     private final String SAML_URL = "https://www.campus.uni-erlangen.de/Shibboleth.sso/SAML2/POST";
@@ -45,6 +45,9 @@ public class GradeManager {
     }
 
     public void startMonitoring() {
+        if (!zGPB.INSTANCE.botConfigurationHandler.getConfigValueBoolean("zGPB_idm_enabled"))
+            return;
+
         GRADE_PAGE_URL = null;
         current = null;
         ASI = null;

@@ -1,5 +1,6 @@
 package external.dict;
 
+import main.zGPB;
 import network.NetworkUtil;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,7 +14,7 @@ public class DictionaryManager {
         JSONParser parser = new JSONParser();
         try {
 
-            String wordURL = System.getenv("zGPB_urban").replace("[X]", NetworkUtil.transformToHTMLString(word));
+            String wordURL = zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_dict_api").replace("[X]", NetworkUtil.transformToHTMLString(word));
             String apiAnswer = NetworkUtil.sendGetRequest(wordURL, Collections.emptyMap());
 
             if (apiAnswer == null || apiAnswer.trim().isEmpty())
@@ -38,7 +39,8 @@ public class DictionaryManager {
                 if ((float) tu / td > (currentMax == null ? 0 : (float) currentMax.thumbsUp() / currentMax.thumbsDown())) {
                     currentMax = new DictionaryEntry(
                             (String) cur.get("definition"), (String) cur.get("example"), (String) cur.get("author"),
-                            System.getenv("zGPB_urban_main").replace("[X]", NetworkUtil.transformToHTMLString(word)), Math.toIntExact((Long) cur.get("thumbs_up")),
+                            zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_dict_main").
+                                    replace("[X]", NetworkUtil.transformToHTMLString(word)), Math.toIntExact((Long) cur.get("thumbs_up")),
                             Math.toIntExact((Long) cur.get("thumbs_down")), (String) cur.get("written_on"));
                 }
             }

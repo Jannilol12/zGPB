@@ -1,5 +1,6 @@
 package main;
 
+import configuration.BotConfigurationHandler;
 import configuration.GuildConfigurationHandler;
 import console.ConsoleHandler;
 import database.DatabaseHandler;
@@ -13,6 +14,7 @@ public class zGPB {
 
     public static final zGPB INSTANCE = new zGPB();
 
+    public final BotConfigurationHandler botConfigurationHandler;
     public final CommandHandler commandHandler;
     public final DatabaseHandler databaseHandler;
     public final GuildConfigurationHandler guildConfigurationHandler;
@@ -23,6 +25,7 @@ public class zGPB {
 
     public zGPB() {
         Logger.logDebugMessage("Reached pre init");
+        botConfigurationHandler = new BotConfigurationHandler();
         databaseHandler = new DatabaseHandler();
         guildConfigurationHandler = new GuildConfigurationHandler();
         commandHandler = new CommandHandler();
@@ -53,6 +56,7 @@ public class zGPB {
         guildConfigurationHandler.saveConfig();
         discordHandler.getLocalJDA().shutdown();
         databaseHandler.closeDatabaseConnection();
+        botConfigurationHandler.saveProperties();
     }
 
 }
