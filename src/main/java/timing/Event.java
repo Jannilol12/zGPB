@@ -1,7 +1,7 @@
 package timing;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
-public record Event(long channelID, long messageID, LocalDateTime time) {
+public record Event(long channelID, long messageID, ZonedDateTime time) {
 
 }

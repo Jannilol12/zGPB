@@ -6,9 +6,7 @@ import main.zGPB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import timing.Event;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 
 public class RemindMeCommand extends Command {
 
@@ -25,16 +23,16 @@ public class RemindMeCommand extends Command {
         if (String.valueOf(splitCommand[1].charAt(splitCommand[1].length() - 1)).matches("[yMwdhms]")) {
             char unit = splitCommand[1].charAt(splitCommand[1].length() - 1);
             long cleanTime = Long.parseLong(splitCommand[1].replace("" + unit, ""));
-            LocalDateTime remindTime;
+            ZonedDateTime remindTime;
 
             switch (unit) {
-                case 'y' -> remindTime = LocalDateTime.now().plusYears(cleanTime);
-                case 'M' -> remindTime = LocalDateTime.now().plusMonths(cleanTime);
-                case 'w' -> remindTime = LocalDateTime.now().plusWeeks(cleanTime);
-                case 'd' -> remindTime = LocalDateTime.now().plusDays(cleanTime);
-                case 'h' -> remindTime = LocalDateTime.now().plusHours(cleanTime);
-                case 'm' -> remindTime = LocalDateTime.now().plusMinutes(cleanTime);
-                case 's' -> remindTime = LocalDateTime.now().plusSeconds(cleanTime);
+                case 'y' -> remindTime = ZonedDateTime.now().plusYears(cleanTime);
+                case 'M' -> remindTime = ZonedDateTime.now().plusMonths(cleanTime);
+                case 'w' -> remindTime = ZonedDateTime.now().plusWeeks(cleanTime);
+                case 'd' -> remindTime = ZonedDateTime.now().plusDays(cleanTime);
+                case 'h' -> remindTime = ZonedDateTime.now().plusHours(cleanTime);
+                case 'm' -> remindTime = ZonedDateTime.now().plusMinutes(cleanTime);
+                case 's' -> remindTime = ZonedDateTime.now().plusSeconds(cleanTime);
                 default -> {
                     mre.getMessage().reply("unknown format").mentionRepliedUser(false).queue();
                     return true;
@@ -81,13 +79,13 @@ public class RemindMeCommand extends Command {
                 }
             }
 
-            LocalDateTime remindTime = null;
+            ZonedDateTime remindTime = null;
             if (date != null && time != null) {
-                remindTime = LocalDateTime.of(date, time);
+                remindTime = ZonedDateTime.of(LocalDateTime.of(date, time), ZoneId.systemDefault());
             } else if (date != null) {
-                remindTime = date.atStartOfDay();
+                remindTime = date.atStartOfDay(ZoneId.systemDefault());
             } else if (time != null) {
-                remindTime = time.atDate(LocalDate.now());
+                remindTime = time.atDate(LocalDate.now()).atZone(ZoneId.systemDefault());
             }
 
             if (remindTime != null) {

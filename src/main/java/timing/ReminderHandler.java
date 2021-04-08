@@ -4,7 +4,7 @@ import database.DataHandler;
 import log.Logger;
 import main.zGPB;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -13,9 +13,9 @@ import java.util.concurrent.TimeUnit;
 
 public class ReminderHandler {
 
-    public void runTaskAtDateTime(LocalDateTime end, Runnable task) {
+    public void runTaskAtDateTime(ZonedDateTime end, Runnable task) {
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-        ses.schedule(task, LocalDateTime.now().until(end, ChronoUnit.SECONDS), TimeUnit.SECONDS);
+        ses.schedule(task, ZonedDateTime.now().until(end, ChronoUnit.SECONDS), TimeUnit.SECONDS);
     }
 
     public void registerOldReminders() {
@@ -23,7 +23,7 @@ public class ReminderHandler {
         Logger.logDebugMessage("Registering " + reminders.size() + " past reminders");
         reminders.forEach(event -> {
             // fix database inconsistencies on the fly
-            if(event.time().isBefore(LocalDateTime.now())) {
+            if(event.time().isBefore(ZonedDateTime.now())) {
                 DataHandler.removeReminder(event);
             } else {
                 runTaskAtDateTime(event.time(), () -> {
