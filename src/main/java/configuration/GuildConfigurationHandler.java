@@ -90,8 +90,7 @@ public class GuildConfigurationHandler {
         StringBuilder sb = new StringBuilder();
         sb.append("zGPB configuration").append(System.lineSeparator());
         for (String configKey : configMappings.get(guild).keySet()) {
-            sb.append("[").append(typeMappings.get(configKey)).append("] ").
-                    append(configKey).append(" = ").append(configMappings.get(guild).get(configKey)).append(System.lineSeparator());
+            sb.append(String.format("%-14s %-28s = %-16s", "[" + typeMappings.get(configKey) + "]", configKey, configMappings.get(guild).get(configKey))).append(System.lineSeparator());
         }
         return sb.toString();
     }
