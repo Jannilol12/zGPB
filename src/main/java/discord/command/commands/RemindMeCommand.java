@@ -19,7 +19,11 @@ public class RemindMeCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        // TODO: 02/04/2021 fix unsafe string manipulation
+        if (splitCommand[1].length() < 2) {
+            mre.getMessage().reply("couldn't parse format").mentionRepliedUser(false).queue();
+            return true;
+        }
+
         if (String.valueOf(splitCommand[1].charAt(splitCommand[1].length() - 1)).matches("[yMwdhms]")) {
             char unit = splitCommand[1].charAt(splitCommand[1].length() - 1);
             long cleanTime = Long.parseLong(splitCommand[1].replace("" + unit, ""));
@@ -42,10 +46,7 @@ public class RemindMeCommand extends Command {
             Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
             DataHandler.saveReminder(remindEvent);
             mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))).mentionRepliedUser(false).queue();
-            zGPB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
-                mre.getMessage().reply("here is your reminder :)").mentionRepliedUser(true).queue();
-                DataHandler.removeReminder(remindEvent);
-            });
+            zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
         } else {
             LocalDate date = null;
             LocalTime time = null;
@@ -91,10 +92,7 @@ public class RemindMeCommand extends Command {
             if (remindTime != null) {
                 Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
                 DataHandler.saveReminder(remindEvent);
-                zGPB.INSTANCE.reminderHandler.runTaskAtDateTime(remindTime, () -> {
-                    mre.getMessage().reply("here is your reminder :)").mentionRepliedUser(true).queue();
-                    DataHandler.removeReminder(remindEvent);
-                });
+                zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
                 mre.getMessage().reply("you will be reminded at the given time").mentionRepliedUser(false).queue();
             }
 
