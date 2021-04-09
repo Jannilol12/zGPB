@@ -30,7 +30,7 @@ public class DefineCommand extends Command {
         if (highest == null) {
             mre.getMessage().reply("couldn't resolve the given term").mentionRepliedUser(false).queue();
         } else {
-            mre.getMessage().reply(MessageCrafter.craftGenericEmbedMessage("definition for " + splitCommand[1] + " from " + highest.author(),
+            mre.getMessage().reply(MessageCrafter.craftGenericEmbedMessage("definition for __" + splitCommand[1] + "__ from *" + highest.author() + "*",
                     new EmbedField("definition", highest.definition(), false),
                     new EmbedField("example", highest.example(), false),
                     new EmbedField("thumbs up", highest.thumbsUp() + "", true),
