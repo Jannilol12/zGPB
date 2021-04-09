@@ -14,8 +14,8 @@ import java.util.Set;
 
 public class GuildConfigurationHandler {
 
-    private Map<String, ConfigType> typeMappings;
-    private Map<String, String> defaults;
+    private final Map<String, ConfigType> typeMappings;
+    private final Map<String, String> defaults;
 
     private Map<Long, Map<String, String>> configMappings;
 

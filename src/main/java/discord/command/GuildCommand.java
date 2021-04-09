@@ -8,7 +8,7 @@ import java.util.EnumSet;
 
 public abstract class GuildCommand extends Command {
 
-    private EnumSet<Permission> permissions;
+    private final EnumSet<Permission> permissions;
 
     public GuildCommand(String name, String usage, String description, int argCount, Permission... permission) {
         super(name, usage, description, argCount);
