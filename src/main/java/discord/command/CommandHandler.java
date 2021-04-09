@@ -2,8 +2,8 @@ package discord.command;
 
 import discord.command.commands.*;
 import log.Logger;
-import main.zGPB;
 import main.Util;
+import main.zGPB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Collections;
@@ -38,7 +38,7 @@ public class CommandHandler {
     public void handleMessage(MessageReceivedEvent mre) {
         String msg = mre.getMessage().getContentRaw();
 
-        if(msg.trim().isEmpty() && msg.trim().length() < 2)
+        if (msg.trim().isEmpty() || msg.trim().length() < 2)
             return;
 
         if (!isValidPrefix(msg.charAt(0), mre))
