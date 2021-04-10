@@ -54,16 +54,14 @@ public class DiscordHandler {
         dictionary[1] = (Activity.listening("elmasri navathe fundamentals of database systems part 37"));
         dictionary[2] = (Activity.playing("AuD Speedrun any%"));
         dictionary[3] = (Activity.competing("not crashing championship"));
-        dictionary[4] = (Activity.playing("stay at home #2"));
+        dictionary[4] = (Activity.playing("stay at home"));
         dictionary[5] = (Activity.playing("programming kenken"));
-        dictionary[6] = (Activity.playing("rüge verfassen"));
+        dictionary[6] = (Activity.playing("r\u00fcge verfassen"));
 
         Random r = new Random();
 
         ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-        ses.scheduleAtFixedRate(() -> {
-            localJDA.getPresence().setActivity(dictionary[r.nextInt(dictionary.length)]);
-        }, 10, 60, TimeUnit.SECONDS);
+        ses.scheduleAtFixedRate(() -> localJDA.getPresence().setActivity(dictionary[r.nextInt(dictionary.length)]), 1, 60, TimeUnit.SECONDS);
 
     }
 
