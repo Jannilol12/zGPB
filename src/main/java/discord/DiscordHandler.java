@@ -1,6 +1,6 @@
 package discord;
 
-import discord.command.commands.ChannelCommand;
+import discord.command.commands.guild.ChannelCommand;
 import discord.listeners.GuildListener;
 import discord.listeners.MessageListener;
 import log.Logger;

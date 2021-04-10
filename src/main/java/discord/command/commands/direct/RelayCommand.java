@@ -1,4 +1,4 @@
-package discord.command.commands;
+package discord.command.commands.direct;
 
 import discord.command.PrivateCommand;
 import main.Util;

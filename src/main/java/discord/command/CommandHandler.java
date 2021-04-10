@@ -1,6 +1,11 @@
 package discord.command;
 
 import discord.command.commands.*;
+import discord.command.commands.direct.RelayCommand;
+import discord.command.commands.guild.ChannelCommand;
+import discord.command.commands.guild.ConfigCommand;
+import discord.command.commands.guild.EmoteCommand;
+import discord.command.commands.guild.ScanCommand;
 import log.Logger;
 import main.Util;
 import main.zGPB;

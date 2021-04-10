@@ -1,7 +1,7 @@
 package discord.listeners;
 
 import database.DataHandler;
-import discord.command.commands.ChannelCommand;
+import discord.command.commands.guild.ChannelCommand;
 import main.zGPB;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;

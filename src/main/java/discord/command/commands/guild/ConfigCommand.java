@@ -1,4 +1,4 @@
-package discord.command.commands;
+package discord.command.commands.guild;
 
 import discord.MessageCrafter;
 import discord.command.GuildCommand;
