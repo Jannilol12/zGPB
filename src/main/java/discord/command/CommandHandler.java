@@ -18,7 +18,7 @@ import java.util.Set;
 public class CommandHandler {
 
     private final HashSet<Command> commands;
-    private final char PREFIX = '.';
+    private final char PREFIX = '!';
 
     public CommandHandler() {
         this.commands = new HashSet<>();
