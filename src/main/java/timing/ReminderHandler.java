@@ -42,26 +42,25 @@ public class ReminderHandler {
 
     // TODO: 12/04/2021 doesn't work in private channels anymore
     private void sendReminder(Message m, Event e) {
+        String remindText = "here is your reminder " + (e.content().trim().isEmpty() ? "" : "[" + e.content() + "]");
         if (m.isFromGuild()) {
             m.retrieveReactionUsers("\u2795").queue(users -> {
                 if (users.size() <= 1) {
-                    m.reply("here is your reminder" + (e.content().trim().isEmpty() ? "" : e.content())).queue();
+                    m.reply(remindText).queue();
                 } else {
                     m.getGuild().createRole().setName("multicast-" + Util.createRandomString(3)).queue(r -> {
                         users.forEach(u -> m.getGuild().addRoleToMember(u.getId(), r).queue());
-                        m.reply("<@&" + r.getId() + "> here is your reminder " + (e.content().trim().isEmpty() ? "" : "[" + e.content() + "]")).
-                                queue(
-                                        message -> message.editMessage("here is your reminder" +
-                                                                       (e.content().trim().isEmpty() ? "" : "[" + e.content() + "]")).
-                                                queueAfter(100, TimeUnit.MILLISECONDS)
-                                );
+                        m.reply("<@&" + r.getId() + "> " + remindText).queue(
+                                message -> message.editMessage(remindText).queueAfter(
+                                        100, TimeUnit.MILLISECONDS)
+                        );
                         r.delete().queueAfter(50, TimeUnit.MILLISECONDS);
 
                     });
                 }
             });
         } else {
-            m.reply("here is your reminder :)" + (e.content().trim().isEmpty() ? "" : "[" + e.content() + "]")).queue();
+            m.reply(remindText).queue();
         }
     }
 
