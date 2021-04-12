@@ -93,7 +93,7 @@ public class RemindMeCommand extends Command {
                 Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
                 DataHandler.saveReminder(remindEvent);
                 zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
-                mre.getMessage().reply("you will be reminded at the given time").mentionRepliedUser(false).queue();
+                mre.getMessage().reply("you will be reminded at " + remindTime.toString()).mentionRepliedUser(false).queue();
             }
 
         }
