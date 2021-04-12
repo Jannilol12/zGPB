@@ -11,7 +11,13 @@ import java.time.*;
 public class RemindMeCommand extends Command {
 
     public RemindMeCommand() {
-        super("remindme", "remindme <x (y/M/w/d/h/m/s) / yyyy-MM-dd.hh:mm:ss>", "reminds you at the given time", 2);
+        super("remindme", "remindme <x (y/M/w/d/h/m/s) / yyyy-MM-dd.hh:mm:ss> [text]", "reminds you at the given time with the given text", 2);
+    }
+
+    @Override
+    protected boolean isSyntaxCorrect(String command) {
+        int l = command.split(" ").length;
+        return l > 1 && l <= 3;
     }
 
     @Override
@@ -24,6 +30,11 @@ public class RemindMeCommand extends Command {
             return true;
         }
 
+        String content = "";
+        if (splitCommand.length == 3)
+            content = splitCommand[2];
+
+        // TODO: 12/04/2021 deduplicate
         if (String.valueOf(splitCommand[1].charAt(splitCommand[1].length() - 1)).matches("[yMwdhms]")) {
             char unit = splitCommand[1].charAt(splitCommand[1].length() - 1);
             long cleanTime = Long.parseLong(splitCommand[1].replace("" + unit, ""));
@@ -43,9 +54,14 @@ public class RemindMeCommand extends Command {
                 }
             }
 
-            Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
+            Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
+
             DataHandler.saveReminder(remindEvent);
-            mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))).mentionRepliedUser(false).queue();
+            mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))
+                                   + System.lineSeparator() + "if you also want to be reminded react with a \u2795 on the original message").
+                    mentionRepliedUser(false).queue(
+                    message -> mre.getMessage().addReaction("U+2795").queue()
+            );
             zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
         } else {
             LocalDate date = null;
@@ -90,10 +106,13 @@ public class RemindMeCommand extends Command {
             }
 
             if (remindTime != null) {
-                Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime);
+                Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
                 DataHandler.saveReminder(remindEvent);
                 zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
-                mre.getMessage().reply("you will be reminded at " + remindTime.toString()).mentionRepliedUser(false).queue();
+                mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))
+                                       + System.lineSeparator() + "if you also want to be reminded react with :heavy_plus_sign:").mentionRepliedUser(false).queue(
+                        message -> message.addReaction("U+2795").queue()
+                );
             }
 
         }

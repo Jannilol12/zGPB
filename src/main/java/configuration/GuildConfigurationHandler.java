@@ -124,6 +124,8 @@ public class GuildConfigurationHandler {
     public long getConfigLong(long guild, String key) {
         if (key == null || !configMappings.containsKey(guild) || !defaults.containsKey(key))
             throw new IllegalArgumentException(guild + " " + key);
+        if (configMappings.get(guild).get(key).trim().isEmpty())
+            return -1;
         return Long.parseLong(configMappings.get(guild).get(key));
     }
 
