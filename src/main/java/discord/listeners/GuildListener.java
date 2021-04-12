@@ -3,6 +3,7 @@ package discord.listeners;
 import database.DataHandler;
 import discord.command.commands.guild.ChannelCommand;
 import main.zGPB;
+import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -47,4 +48,10 @@ public class GuildListener extends ListenerAdapter {
         }
     }
 
+    @Override
+    public void onVoiceChannelDelete(@NotNull VoiceChannelDeleteEvent event) {
+        if (ChannelCommand.isTemporaryChannel(event.getChannel().getIdLong())) {
+            DataHandler.removeTemporaryChannel(event.getChannel().getIdLong());
+        }
+    }
 }
