@@ -36,6 +36,7 @@ public class GradeManager {
     private String ASI;
     private Set<GradeEntry> current;
     private boolean initAndMsg = false;
+    private int exceptionCount = 0;
 
     public void startMonitoring() {
         if (!zGPB.INSTANCE.botConfigurationHandler.getConfigValueBoolean("zGPB_idm_enabled"))
@@ -155,10 +156,13 @@ public class GradeManager {
 
     public void waitForResults() {
         new Thread(() -> {
-            boolean exception = false;
             while (true) {
-                if (exception) {
-                    Logger.logException("stopping, errors detected");
+                if (exceptionCount == 1) {
+                    Logger.logDebugMessage("got exception, retrying");
+                    startMonitoring();
+                    return;
+                } else if (exceptionCount >= 6) {
+                    Logger.logException("stopping, multiple errors detected");
                     return;
                 }
                 try {
@@ -207,7 +211,7 @@ public class GradeManager {
                     TimeUnit.MINUTES.sleep(zGPB.INSTANCE.botConfigurationHandler.getConfigValueInteger("zGPB_idm_refresh"));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    exception = true;
+                    exceptionCount++;
                 }
             }
         }).start();
