@@ -16,7 +16,7 @@ public class RemindMeCommand extends Command {
 
     @Override
     protected boolean isSyntaxCorrect(String command) {
-        int l = command.split(" ").length;
+        int l = command.split(" ", 3).length;
         return l > 1 && l <= 3;
     }
 
@@ -31,8 +31,10 @@ public class RemindMeCommand extends Command {
         }
 
         String content = "";
-        if (splitCommand.length == 3)
+        if (splitCommand.length >= 3) {
+            splitCommand = givenCommand.split(" ", 3);
             content = splitCommand[2];
+        }
 
         // TODO: 12/04/2021 deduplicate
         if (String.valueOf(splitCommand[1].charAt(splitCommand[1].length() - 1)).matches("[yMwdhms]")) {
