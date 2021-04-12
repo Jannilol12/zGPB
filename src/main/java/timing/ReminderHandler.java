@@ -16,9 +16,14 @@ import java.util.concurrent.TimeUnit;
 
 public class ReminderHandler {
 
+    private ScheduledExecutorService executorService;
+
+    public ReminderHandler() {
+        executorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+    }
+
     private void runTaskAtDateTime(ZonedDateTime end, Runnable task) {
-        ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-        ses.schedule(task, ZonedDateTime.now().until(end, ChronoUnit.SECONDS), TimeUnit.SECONDS);
+        executorService.schedule(task, ZonedDateTime.now().until(end, ChronoUnit.SECONDS), TimeUnit.SECONDS);
     }
 
     public void remindMessage(Event remindEvent) {

@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ChannelCommand extends GuildCommand {
 
+    public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+
     public ChannelCommand() {
         super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2);
     }
@@ -40,8 +42,7 @@ public class ChannelCommand extends GuildCommand {
     }
 
     public static void scheduleChannelDeletion(long channelID, boolean repeat) {
-        ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-        ses.schedule(() -> {
+        executorService.schedule(() -> {
             VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
             if (currentVoice != null) {
                 if (currentVoice.getMembers().size() == 0) {
