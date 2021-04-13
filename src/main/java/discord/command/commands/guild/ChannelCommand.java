@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.requests.ErrorResponse;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 public class ChannelCommand extends GuildCommand {
 
     public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+
+    public static Set<Long> scheduledDeletions = new HashSet<>();
 
     public ChannelCommand() {
         super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2);
@@ -42,6 +45,9 @@ public class ChannelCommand extends GuildCommand {
     }
 
     public static void scheduleChannelDeletion(long channelID, boolean repeat) {
+        if (scheduledDeletions.contains(channelID))
+            return;
+        scheduledDeletions.add(channelID);
         executorService.schedule(() -> {
             VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
             if (currentVoice != null) {
