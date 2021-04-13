@@ -37,6 +37,7 @@ public class GradeManager {
     private Set<GradeEntry> current;
     private boolean initAndMsg = false;
     private int exceptionCount = 0;
+    private boolean exception = false;
 
     public void startMonitoring() {
         if (!zGPB.INSTANCE.botConfigurationHandler.getConfigValueBoolean("zGPB_idm_enabled"))
@@ -157,13 +158,14 @@ public class GradeManager {
     public void waitForResults() {
         new Thread(() -> {
             while (true) {
-                if (exceptionCount == 1) {
-                    Logger.logDebugMessage("got exception, retrying");
-                    startMonitoring();
+                if (exceptionCount >= 6) {
+                    Logger.logException("reached exception limit, stopping");
                     return;
-                } else if (exceptionCount >= 6) {
-                    Logger.logException("stopping, multiple errors detected");
-                    return;
+                }
+                if (exception) {
+                    Logger.logDebugMessage("got exception, count " + exceptionCount);
+                    initializeCampusConnection();
+                    exception = false;
                 }
                 try {
                     if (isEnabled) {
@@ -212,6 +214,7 @@ public class GradeManager {
                 } catch (Exception e) {
                     e.printStackTrace();
                     exceptionCount++;
+                    exception = true;
                 }
             }
         }).start();
