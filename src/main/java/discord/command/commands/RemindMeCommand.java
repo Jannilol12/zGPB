@@ -64,11 +64,13 @@ public class RemindMeCommand extends Command {
             Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
 
             DataHandler.saveReminder(remindEvent);
-            mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))
-                                   + System.lineSeparator() + "if you also want to be reminded react with a \u2795 on the original message").
-                    mentionRepliedUser(false).queue(
-                    message -> mre.getMessage().addReaction("U+2795").queue()
-            );
+//            mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))
+//                                   + System.lineSeparator() + "if you also want to be reminded react with a \u2795 on the original message").
+//                    mentionRepliedUser(false).queue(
+//                    message -> mre.getMessage().addReaction("U+2795").queue()
+//            );
+            mre.getMessage().addReaction("U+2714").queue();
+            mre.getMessage().addReaction("U+2795").queue();
             zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
         } else {
             LocalDate date = null;
@@ -116,11 +118,14 @@ public class RemindMeCommand extends Command {
                 Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
                 DataHandler.saveReminder(remindEvent);
                 zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
-                mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))
-                                       + System.lineSeparator() + "if you also want to be reminded react with a \u2795 on the original message").
-                        mentionRepliedUser(false).queue(
-                        message -> mre.getMessage().addReaction("U+2795").queue()
-                );
+                mre.getMessage().addReaction("U+2714").queue();
+                mre.getMessage().addReaction("U+2795").queue();
+
+//                mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))
+//                                       + System.lineSeparator() + "if you also want to be reminded react with a \u2795 on the original message").
+//                        mentionRepliedUser(false).queue(
+//                        message -> mre.getMessage().addReaction("U+2795").queue()
+//                );
             }
 
         }
