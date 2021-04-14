@@ -36,7 +36,7 @@ public class RemindMeCommand extends Command {
             content = splitCommand[2];
         }
 
-        if (content.contains("@everyone") || mre.getMessage().getMentionedMembers().size() != 0 || mre.getMessage().getMentionedRoles().size() != 0) {
+        if (content.contains("@everyone") || mre.getMessage().getContentRaw().contains("@here") || mre.getMessage().getMentionedMembers().size() != 0 || mre.getMessage().getMentionedRoles().size() != 0) {
             mre.getMessage().reply("you are not allowed to ping users/roles in reminders").mentionRepliedUser(true).queue();
             return true;
         }
@@ -116,9 +116,10 @@ public class RemindMeCommand extends Command {
                 Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
                 DataHandler.saveReminder(remindEvent);
                 zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
-                mre.getMessage().reply("you will be reminded at " + remindTime.toString()
-                                       + System.lineSeparator() + "if you also want to be reminded react with :heavy_plus_sign:").mentionRepliedUser(false).queue(
-                        message -> message.addReaction("U+2795").queue()
+                mre.getMessage().reply("you will be reminded at " + remindTime.toString().substring(0, remindTime.toString().indexOf("."))
+                                       + System.lineSeparator() + "if you also want to be reminded react with a \u2795 on the original message").
+                        mentionRepliedUser(false).queue(
+                        message -> mre.getMessage().addReaction("U+2795").queue()
                 );
             }
 
