@@ -2,6 +2,7 @@ package main;
 
 import discord.command.Command;
 
+import java.time.ZonedDateTime;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Util {
@@ -12,8 +13,27 @@ public final class Util {
 
     }
 
+    public static ZonedDateTime getTimeAdded(String time) {
+        char unit = time.charAt(time.length() - 1);
+        long cleanTime = Long.parseLong(time.replace(unit + "", ""));
+        ZonedDateTime resultTime = ZonedDateTime.now();
+        switch (time.substring(time.length() - 1).charAt(0)) {
+            case 'y' -> resultTime = resultTime.plusYears(cleanTime);
+            case 'M' -> resultTime = resultTime.plusMonths(cleanTime);
+            case 'w' -> resultTime = resultTime.plusWeeks(cleanTime);
+            case 'd' -> resultTime = resultTime.plusDays(cleanTime);
+            case 'h' -> resultTime = resultTime.plusHours(cleanTime);
+            case 'm' -> resultTime = resultTime.plusMinutes(cleanTime);
+            case 's' -> resultTime = resultTime.plusSeconds(cleanTime);
+            default -> {
+                return null;
+            }
+        }
+        return resultTime;
+    }
+
     public static boolean isValidDiscordID(String in) {
-        if (in == null || in.length() != 18)
+        if (in == null) // || in.length() != 18
             return false;
 
         return in.chars().allMatch(Character::isDigit);
