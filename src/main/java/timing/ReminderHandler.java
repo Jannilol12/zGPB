@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ReminderHandler {
 
-    private ScheduledExecutorService executorService;
+    private final ScheduledExecutorService executorService;
 
     public ReminderHandler() {
         executorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
@@ -51,11 +51,9 @@ public class ReminderHandler {
                     m.getGuild().createRole().setName("multicast-" + Util.createRandomString(3)).queue(r -> {
                         users.forEach(u -> m.getGuild().addRoleToMember(u.getId(), r).queue());
                         m.reply("<@&" + r.getId() + "> " + remindText).queue(
-                                message -> message.editMessage(remindText).queueAfter(
-                                        100, TimeUnit.MILLISECONDS)
+                                message -> message.editMessage(remindText).queue()
                         );
-                        r.delete().queueAfter(50, TimeUnit.MILLISECONDS);
-
+                        r.delete().queueAfter(1, TimeUnit.DAYS);
                     });
                 }
             });
