@@ -37,6 +37,7 @@ public class GuildConfigurationHandler {
         defaults.put("fix_role_auto", "");
         defaults.put("fix_role_auto_msg", "");
         defaults.put("temporary_channel_assignment", "-1");
+        defaults.put("mute_enabled", "true");
 
         typeMappings = new HashMap<>();
         typeMappings.put("logging_enabled", ConfigType.BOOLEAN);
@@ -53,6 +54,7 @@ public class GuildConfigurationHandler {
         typeMappings.put("fix_role_auto", ConfigType.DISCORD_ID);
         typeMappings.put("fix_role_auto_msg", ConfigType.DISCORD_ID);
         typeMappings.put("temporary_channel_assignment", ConfigType.DISCORD_ID);
+        typeMappings.put("mute_enabled", ConfigType.BOOLEAN);
 
     }
 

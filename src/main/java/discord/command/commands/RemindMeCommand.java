@@ -42,7 +42,9 @@ public class RemindMeCommand extends Command {
         }
 
         // TODO: 12/04/2021 deduplicate
+        // TODO: 15/04/2021 check substrings
         if (String.valueOf(splitCommand[1].charAt(splitCommand[1].length() - 1)).matches("[yMwdhms]")) {
+            // TODO: 15/04/2021 use util method
             char unit = splitCommand[1].charAt(splitCommand[1].length() - 1);
             long cleanTime = Long.parseLong(splitCommand[1].replace("" + unit, ""));
             ZonedDateTime remindTime;
