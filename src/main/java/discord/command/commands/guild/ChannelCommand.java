@@ -11,19 +11,19 @@ import net.dv8tion.jda.api.exceptions.ErrorHandler;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.ErrorResponse;
 
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class ChannelCommand extends GuildCommand {
 
-    public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+    private static final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
-    public static Set<Long> scheduledDeletions = new HashSet<>();
+    private final static Map<Long, ScheduledFuture<?>> deletionFutures = new HashMap<>();
 
     public ChannelCommand() {
         super("channel", "channel <create|modify|delete> name [size]", "creates a temporary channel", 2);
@@ -44,25 +44,11 @@ public class ChannelCommand extends GuildCommand {
         }
     }
 
-    public static void scheduleChannelDeletion(long channelID, boolean repeat) {
-        if (scheduledDeletions.contains(channelID))
+    public static void scheduleChannelDeletion(long channelID) {
+        if (deletionFutures.containsKey(channelID))
             return;
-        scheduledDeletions.add(channelID);
-        executorService.schedule(() -> {
-            VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
-            if (currentVoice != null) {
-                if (currentVoice.getMembers().size() == 0) {
-                    DataHandler.removeTemporaryChannel(channelID);
-                    currentVoice.delete().queue(s -> {
-                    }, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_CHANNEL));
-                } else {
-                    if (repeat)
-                        scheduleChannelDeletion(channelID, true);
-                }
-            } else {
-                DataHandler.removeTemporaryChannel(channelID);
-            }
-        }, LocalTime.now().until(LocalTime.now().plus(30, ChronoUnit.SECONDS), ChronoUnit.SECONDS), TimeUnit.SECONDS);
+        deletionFutures.put(channelID,
+                executorService.scheduleAtFixedRate(new DeletionTask(channelID), 0, 30, TimeUnit.SECONDS));
     }
 
     public static int getChannelCountByUser(long authorID) {
@@ -145,8 +131,10 @@ public class ChannelCommand extends GuildCommand {
                     category.createVoiceChannel(secondSplit[2]).setUserlimit(size).setBitrate(maxGuildBitrate).
                             queue(channel -> {
                                 DataHandler.addTemporaryChannel(channel, mre);
+                                scheduleChannelDeletion(channel.getIdLong());
                             });
                     mre.getMessage().reply("channel created successfully").mentionRepliedUser(false).queue();
+
                 } catch (InsufficientPermissionException ipe) {
                     mre.getMessage().reply("the bot has insufficient permissions").mentionRepliedUser(false).queue();
                 }
@@ -198,6 +186,31 @@ public class ChannelCommand extends GuildCommand {
             return -1;
         } else {
             return tempID;
+        }
+    }
+
+    // this exists so the task can end itself after deleting the channel
+    private static class DeletionTask implements Runnable {
+
+        private final long channelID;
+
+        public DeletionTask(long id) {
+            this.channelID = id;
+        }
+
+        @Override
+        public void run() {
+            VoiceChannel currentVoice = zGPB.INSTANCE.discordHandler.getLocalJDA().getVoiceChannelById(channelID);
+            if (currentVoice != null) {
+                if (currentVoice.getMembers().size() == 0) {
+                    DataHandler.removeTemporaryChannel(channelID);
+                    currentVoice.delete().queue(s -> {
+                    }, new ErrorHandler().ignore(ErrorResponse.UNKNOWN_CHANNEL));
+                    deletionFutures.get(channelID).cancel(false);
+                }
+            } else {
+                DataHandler.removeTemporaryChannel(channelID);
+            }
         }
     }
 
