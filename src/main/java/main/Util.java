@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class Util {
 
-    private static final String[] ALPHABET = "a,b,c,d,e,f,1,2,3,4,5,6,7,8,9".split(",");
+    private static final String[] ALPHABET = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,0,1,2,3,4,5,6,7,8,9".split(",");
 
     private Util() {
 
