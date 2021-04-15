@@ -31,6 +31,9 @@ public class GuildListener extends ListenerAdapter {
                         tc.createPermissionOverride(mutedRole.get(0)).setDeny(Permission.MESSAGE_WRITE).queue();
                 }
             }
+
+            event.getGuild().getRoles().stream().filter(r -> r.getName().startsWith("multicast-")).forEach(r -> r.delete().queue());
+
         }
 
     }
