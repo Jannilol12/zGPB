@@ -1,7 +1,7 @@
 package discord.listeners;
 
 import database.DataHandler;
-import discord.command.commands.guild.ChannelCommand;
+import discord.ChannelHandler;
 import main.zGPB;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.GuildChannel;
@@ -46,8 +46,8 @@ public class GuildListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
         if (zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(event.getGuild(), "temporary_channel_allowed")) {
-            if (ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
-                ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
+            if (ChannelHandler.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
+                ChannelHandler.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
             }
         }
         DataHandler.handleAssignment(event.getGuild(), event.getChannelJoined(), event.getMember());
@@ -61,15 +61,15 @@ public class GuildListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         if (zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(event.getGuild(), "temporary_channel_allowed")) {
-            if (ChannelCommand.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
-                ChannelCommand.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
+            if (ChannelHandler.isTemporaryChannel(event.getChannelLeft().getIdLong())) {
+                ChannelHandler.scheduleChannelDeletion(event.getChannelLeft().getIdLong());
             }
         }
     }
 
     @Override
     public void onVoiceChannelDelete(@NotNull VoiceChannelDeleteEvent event) {
-        if (ChannelCommand.isTemporaryChannel(event.getChannel().getIdLong())) {
+        if (ChannelHandler.isTemporaryChannel(event.getChannel().getIdLong())) {
             DataHandler.removeTemporaryChannel(event.getChannel().getIdLong());
         }
     }

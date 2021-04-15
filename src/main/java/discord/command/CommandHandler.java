@@ -27,7 +27,6 @@ public class CommandHandler {
         commands.add(new InternalCommand());
         commands.add(new ConfigCommand());
         commands.add(new RelayCommand());
-        commands.add(new ChannelCommand());
         commands.add(new HelpCommand());
         commands.add(new ScanCommand());
         commands.add(new EmoteCommand());
