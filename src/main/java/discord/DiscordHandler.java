@@ -33,6 +33,8 @@ public class DiscordHandler {
             Logger.logException(e);
         }
 
+        Logger.logDebugMessage("Logging in as " + localJDA.getSelfUser().getAsTag());
+
         // Create temporary channel cleaner that runs every day at 5 am
         ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
         long timeUntil5AM = LocalTime.now().until(LocalTime.of(3, 38), ChronoUnit.SECONDS);
