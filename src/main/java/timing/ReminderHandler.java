@@ -51,7 +51,7 @@ public class ReminderHandler {
                     m.getGuild().createRole().setName("multicast-" + Util.createRandomString(3)).queue(r -> {
                         users.forEach(u -> m.getGuild().addRoleToMember(u.getId(), r).queue());
                         m.reply("<@&" + r.getId() + "> " + remindText).queue();
-                        r.delete().queueAfter(6, TimeUnit.HOURS);
+                        r.delete().queueAfter(15, TimeUnit.MINUTES);
                     });
                 }
             });

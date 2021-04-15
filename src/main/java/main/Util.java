@@ -33,7 +33,7 @@ public final class Util {
     }
 
     public static boolean isValidDiscordID(String in) {
-        if (in == null) // || in.length() != 18
+        if (in == null || in.isBlank() || in.trim().isEmpty()) // || in.length() != 18
             return false;
 
         return in.chars().allMatch(Character::isDigit);
