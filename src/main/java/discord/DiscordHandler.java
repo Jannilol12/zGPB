@@ -1,6 +1,5 @@
 package discord;
 
-import discord.command.commands.guild.ChannelCommand;
 import discord.listeners.GuildListener;
 import discord.listeners.MessageListener;
 import log.Logger;
@@ -11,8 +10,6 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -35,33 +32,20 @@ public class DiscordHandler {
 
         Logger.logDebugMessage("Logging in as " + localJDA.getSelfUser().getAsTag());
 
-        // Create temporary channel cleaner that runs every day at 5 am
-        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
-        long timeUntil5AM = LocalTime.now().until(LocalTime.of(3, 38), ChronoUnit.SECONDS);
-        ses.scheduleAtFixedRate(this::cleanTemporaryChannels, timeUntil5AM, TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
-        Logger.logDebugMessage("Started temporary cleanup executor service");
     }
 
     public JDA getLocalJDA() {
         return localJDA;
     }
 
-    private void cleanTemporaryChannels() {
-        ChannelCommand.deleteUnusedChannels();
-    }
-
     private void statusRotate() {
-        Activity[] dictionary = new Activity[10];
+        Activity[] dictionary = new Activity[6];
         dictionary[0] = Activity.watching("my life going downhill");
-        dictionary[1] = Activity.listening("elmasri navathe fundamentals of database systems");
-        dictionary[2] = Activity.playing("Speedrun any%");
-        dictionary[3] = Activity.competing("not crashing championship");
-        dictionary[4] = Activity.playing("stay at home");
-        dictionary[5] = Activity.playing("programming kenken");
-        dictionary[6] = Activity.playing("r\u00fcge verfassen");
-        dictionary[7] = Activity.playing("!help");
-        dictionary[8] = Activity.playing(":(");
-        dictionary[9] = Activity.playing(":)");
+        dictionary[1] = Activity.competing("not crashing championship");
+        dictionary[2] = Activity.playing("stay at home");
+        dictionary[3] = Activity.playing("!help");
+        dictionary[4] = Activity.playing(":(");
+        dictionary[5] = Activity.playing(":'(");
 
         Random r = new Random();
 
