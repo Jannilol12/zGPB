@@ -36,7 +36,12 @@ public class RemindMeCommand extends Command {
             content = splitCommand[2];
         }
 
-        if (content.contains("@everyone") || mre.getMessage().getContentRaw().contains("@here") || mre.getMessage().getMentionedMembers().size() != 0 || mre.getMessage().getMentionedRoles().size() != 0) {
+
+        if (content.contains("@everyone")
+            || mre.getMessage().getContentRaw().contains("@here")
+            || mre.getMessage().getMentionedMembers().size() != 0
+            || mre.getMessage().getMentionedRoles().size() != 0
+            || mre.getMessage().getReferencedMessage() != null && mre.getMessage().getMentionedMembers().size() > 1) {
             mre.getMessage().reply("you are not allowed to ping users/roles in reminders").mentionRepliedUser(true).queue();
             return true;
         }
