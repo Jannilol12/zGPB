@@ -2,6 +2,7 @@ package discord.command.commands;
 
 import database.DataHandler;
 import discord.command.Command;
+import main.Util;
 import main.zGPB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import timing.Event;
@@ -36,7 +37,6 @@ public class RemindMeCommand extends Command {
             content = splitCommand[2];
         }
 
-
         if (content.contains("@everyone")
             || mre.getMessage().getContentRaw().contains("@here")
             || mre.getMessage().getMentionedMembers().size() != 0
@@ -49,23 +49,11 @@ public class RemindMeCommand extends Command {
         // TODO: 12/04/2021 deduplicate
         // TODO: 15/04/2021 check substrings
         if (String.valueOf(splitCommand[1].charAt(splitCommand[1].length() - 1)).matches("[yMwdhms]")) {
-            // TODO: 15/04/2021 use util method
-            char unit = splitCommand[1].charAt(splitCommand[1].length() - 1);
-            long cleanTime = Long.parseLong(splitCommand[1].replace("" + unit, ""));
-            ZonedDateTime remindTime;
+            ZonedDateTime remindTime = Util.getTimeAdded(splitCommand[1]);
 
-            switch (unit) {
-                case 'y' -> remindTime = ZonedDateTime.now().plusYears(cleanTime);
-                case 'M' -> remindTime = ZonedDateTime.now().plusMonths(cleanTime);
-                case 'w' -> remindTime = ZonedDateTime.now().plusWeeks(cleanTime);
-                case 'd' -> remindTime = ZonedDateTime.now().plusDays(cleanTime);
-                case 'h' -> remindTime = ZonedDateTime.now().plusHours(cleanTime);
-                case 'm' -> remindTime = ZonedDateTime.now().plusMinutes(cleanTime);
-                case 's' -> remindTime = ZonedDateTime.now().plusSeconds(cleanTime);
-                default -> {
-                    mre.getMessage().reply("unknown format").mentionRepliedUser(false).queue();
-                    return true;
-                }
+            if (remindTime == null) {
+                mre.getMessage().reply("unknown format").mentionRepliedUser(false).queue();
+                return true;
             }
 
             Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
