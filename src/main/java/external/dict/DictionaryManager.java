@@ -32,11 +32,8 @@ public class DictionaryManager {
                 JSONObject cur = (JSONObject) keyIterator.next();
                 long tu = (Long) cur.get("thumbs_up");
                 long td = (Long) cur.get("thumbs_down");
-                if (tu + td < 5)
-                    continue;
-                if (td == 0)
-                    td = 1;
-                if ((float) tu / td > (currentMax == null ? 0 : (float) currentMax.thumbsUp() / currentMax.thumbsDown())) {
+
+                if (currentMax == null || currentMax.thumbsUp() + currentMax.thumbsDown() < tu + td) {
                     currentMax = new DictionaryEntry(
                             (String) cur.get("definition"), (String) cur.get("example"), (String) cur.get("author"),
                             zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_dict_main").
