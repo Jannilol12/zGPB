@@ -48,7 +48,7 @@ public class ChannelCommand extends GuildCommand {
         if (deletionFutures.containsKey(channelID))
             return;
         deletionFutures.put(channelID,
-                executorService.scheduleAtFixedRate(new DeletionTask(channelID), 0, 30, TimeUnit.SECONDS));
+                executorService.scheduleAtFixedRate(new DeletionTask(channelID), 30, 30, TimeUnit.SECONDS));
     }
 
     public static int getChannelCountByUser(long authorID) {
