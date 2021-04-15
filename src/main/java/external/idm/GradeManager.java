@@ -141,6 +141,10 @@ public class GradeManager {
             Element currentExam = exams.get(i);
             Elements examValues = currentExam.getElementsByTag("td");
 
+            if (examValues.size() < 9) {
+                continue;
+            }
+
             if (examValues.get(3).html().trim().isEmpty())
                 continue;
 
