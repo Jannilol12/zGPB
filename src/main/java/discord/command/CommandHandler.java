@@ -54,7 +54,7 @@ public class CommandHandler {
         boolean wasFound = false;
         for (Command c : commands) {
             if (split[0].equals(c.getName()) || (c.getAliases() != null && c.getAliases().contains(split[0]))) {
-                c.onCommand(mre, msg, msg.split(" ", c.argCount));
+                c.onCommand(mre, msg, msg.split(" ", c.argCount + 1));
                 wasFound = true;
                 break;
             }
