@@ -14,7 +14,7 @@ import java.util.List;
 public class RelayCommand extends PrivateCommand {
 
     public RelayCommand() {
-        super("relay", "relay <channel_name | channel_id> message", "relays a message to a given channel", 2);
+        super("relay", "relay <channel_name | channel_id> message", "relays a message to a given channel", 3);
     }
 
     @Override

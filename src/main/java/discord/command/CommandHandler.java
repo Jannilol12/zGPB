@@ -2,7 +2,10 @@ package discord.command;
 
 import discord.command.commands.*;
 import discord.command.commands.direct.RelayCommand;
-import discord.command.commands.guild.*;
+import discord.command.commands.guild.ConfigCommand;
+import discord.command.commands.guild.EmoteCommand;
+import discord.command.commands.guild.MuteCommand;
+import discord.command.commands.guild.ScanCommand;
 import log.Logger;
 import main.Util;
 import main.zGPB;
@@ -51,7 +54,7 @@ public class CommandHandler {
         boolean wasFound = false;
         for (Command c : commands) {
             if (split[0].equals(c.getName()) || (c.getAliases() != null && c.getAliases().contains(split[0]))) {
-                c.onCommand(mre, msg, split);
+                c.onCommand(mre, msg, msg.split(" ", c.argCount));
                 wasFound = true;
                 break;
             }
