@@ -40,6 +40,7 @@ public class RelayCommand extends PrivateCommand {
         return true;
     }
 
+    // TODO: 15/04/2021 fix 
     private void relayMessage(MessageReceivedEvent mre, TextChannel channel, String message) {
 
         if (!zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(channel.getGuild().getIdLong(), "allow_message_relay")) {
@@ -47,8 +48,8 @@ public class RelayCommand extends PrivateCommand {
             return;
         }
 
-        if (!channel.canTalk()) {
-            mre.getMessage().reply("The bot can't interact with this channel").mentionRepliedUser(false).queue();
+        if (!channel.canTalk() || !channel.canTalk(mre.getMember())) {
+            mre.getMessage().reply("the bot or you can't interact with this channel").mentionRepliedUser(false).queue();
         } else {
             channel.sendMessage(
                     new EmbedBuilder().addField("Message relay", message, true).setAuthor("Anonymous").

@@ -27,14 +27,15 @@ public class GuildListener extends ListenerAdapter {
             List<Role> mutedRole = event.getGuild().getRolesByName("muted", false);
             if (mutedRole.size() == 1) {
                 for (GuildChannel tc : event.getGuild().getTextChannels()) {
-                    if (!tc.getPermissionOverride(mutedRole.get(0)).getDenied().contains(Permission.MESSAGE_WRITE))
+                    if (tc.getPermissionOverride(mutedRole.get(0)) != null
+                    && !tc.getPermissionOverride(mutedRole.get(0)).getDenied().contains(Permission.MESSAGE_WRITE))
                         tc.createPermissionOverride(mutedRole.get(0)).setDeny(Permission.MESSAGE_WRITE).queue();
                 }
             }
 
-            event.getGuild().getRoles().stream().filter(r -> r.getName().startsWith("multicast-")).forEach(r -> r.delete().queue());
-
         }
+
+        event.getGuild().getRoles().stream().filter(r -> r.getName().startsWith("multicast-")).forEach(r -> r.delete().queue());
 
     }
 
