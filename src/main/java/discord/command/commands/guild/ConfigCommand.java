@@ -27,6 +27,9 @@ public class ConfigCommand extends GuildCommand {
                 return true;
             }
 
+            if(!splitCommand[1].contains(" "))
+                return true;
+
             String[] keyValueSplit = splitCommand[1].split("=");
             if (keyValueSplit.length <= 1) {
                 mre.getMessage().reply("wrong syntax: `" + usage + "`").mentionRepliedUser(false).queue();

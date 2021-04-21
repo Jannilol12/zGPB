@@ -36,6 +36,10 @@ public class RemindMeCommand extends Command {
             splitCommand = givenCommand.split(" ", 3);
             content = splitCommand[2];
         }
+        if(content.length()>= 1000) {
+            mre.getMessage().reply("content too long").mentionRepliedUser(false).queue();
+            return true;
+        }
 
         if (content.contains("@everyone")
             || mre.getMessage().getContentRaw().contains("@here")
