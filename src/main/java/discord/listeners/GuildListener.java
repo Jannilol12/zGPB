@@ -35,7 +35,6 @@ public class GuildListener extends ListenerAdapter {
         }
 
         event.getGuild().getRoles().stream().filter(r -> r.getName().startsWith("multicast-")).forEach(r -> r.delete().queue());
-
     }
 
     @Override

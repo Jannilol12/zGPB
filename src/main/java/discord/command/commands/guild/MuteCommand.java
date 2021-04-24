@@ -29,8 +29,7 @@ public class MuteCommand extends GuildCommand {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-
-        if (!zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(mre, "mute_enabled")) {
+        if (!zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(mre, "mute_enabled") || mre.getMember().getRoles().stream().noneMatch(r -> r.getName().toLowerCase().contains("admin"))) {
             mre.getMessage().reply("muting is not enabled on this server").mentionRepliedUser(false).queue();
             return true;
         }
