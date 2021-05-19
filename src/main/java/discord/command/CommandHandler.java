@@ -36,6 +36,7 @@ public class CommandHandler {
         commands.add(new DefineCommand());
         commands.add(new RemindMeCommand());
         commands.add(new MuteCommand());
+        commands.add(new WhoIsCommand());
 
         Logger.logDebugMessage("Registered " + commands.size() + " commands");
     }
