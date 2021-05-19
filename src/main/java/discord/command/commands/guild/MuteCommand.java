@@ -34,13 +34,18 @@ public class MuteCommand extends GuildCommand {
             return true;
         }
 
-        Member toMute;
 
         if (mre.getMessage().getMentionedMembers().size() != 1) {
             mre.getMessage().reply("you need to mention a member to mute").mentionRepliedUser(false).queue();
             return true;
         }
 
+        if(splitCommand[1].length() > 4) {
+            mre.getMessage().reply("wrong syntax: `" + usage + "`").mentionRepliedUser(false).queue();
+            return true;
+        }
+
+        Member toMute;
         toMute = mre.getMessage().getMentionedMembers().get(0);
 
         List<Role> mutedRole = mre.getGuild().getRolesByName("muted", false);
