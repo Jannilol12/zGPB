@@ -16,6 +16,16 @@ public abstract class GuildCommand extends Command {
         permissions.addAll(Arrays.asList(permission));
     }
 
+    public GuildCommand(String name, String usage, String description, int argCount, String... aliases) {
+        super(name, usage, description, argCount, aliases);
+        permissions = EnumSet.noneOf(Permission.class);
+    }
+
+    public GuildCommand(String name, String usage, String description, int argCount) {
+        super(name, usage, description, argCount);
+        permissions = EnumSet.noneOf(Permission.class);
+    }
+
     @Override
     protected boolean onCommand(MessageReceivedEvent mre, String givenCommand, String[] splitCommand) {
         if (!super.onCommand(mre, givenCommand, splitCommand))
