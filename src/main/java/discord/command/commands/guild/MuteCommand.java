@@ -21,7 +21,7 @@ public class MuteCommand extends GuildCommand {
     private final static ScheduledExecutorService muteService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
     public MuteCommand() {
-        super("mute", "mute <member> <time>", "mutes the given member", 3, Permission.ADMINISTRATOR);
+        super("mute", "mute <member> <time>", "mutes the given member", 3, Permission.MESSAGE_MANAGE);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class MuteCommand extends GuildCommand {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        if (!zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(mre, "mute_enabled") || mre.getMember().getRoles().stream().noneMatch(r -> r.getName().toLowerCase().contains("admin"))) {
+        if (!zGPB.INSTANCE.guildConfigurationHandler.getConfigBoolean(mre, "mute_enabled")) {
             mre.getMessage().reply("muting is not enabled on this server").mentionRepliedUser(false).queue();
             return true;
         }
