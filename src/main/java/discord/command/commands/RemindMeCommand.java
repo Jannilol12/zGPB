@@ -41,13 +41,15 @@ public class RemindMeCommand extends Command {
             return true;
         }
 
-        if (content.contains("@everyone")
-            || mre.getMessage().getContentRaw().contains("@here")
-            || mre.getMessage().getMentionedMembers().size() != 0
-            || mre.getMessage().getMentionedRoles().size() != 0) {
-            if(!(mre.getMessage().getReferencedMessage() != null && mre.getMessage().getMentionedMembers().size() <= 1)) {
-                mre.getMessage().reply("you are not allowed to ping users/roles in reminders").mentionRepliedUser(true).queue();
-                return true;
+        if (mre.isFromGuild()) {
+            if (content.contains("@everyone")
+                || mre.getMessage().getContentRaw().contains("@here")
+                || mre.getMessage().getMentionedMembers().size() != 0
+                || mre.getMessage().getMentionedRoles().size() != 0) {
+                if (!(mre.getMessage().getReferencedMessage() != null && mre.getMessage().getMentionedMembers().size() <= 1)) {
+                    mre.getMessage().reply("you are not allowed to ping users/roles in reminders").mentionRepliedUser(true).queue();
+                    return true;
+                }
             }
         }
 
@@ -64,7 +66,6 @@ public class RemindMeCommand extends Command {
             Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
 
             DataHandler.saveReminder(remindEvent);
-//            mre.getMessage().addReaction("U+2714").queue();
             mre.getMessage().addReaction("U+2795").queue();
             zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
         } else {
@@ -113,7 +114,6 @@ public class RemindMeCommand extends Command {
                 Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
                 DataHandler.saveReminder(remindEvent);
                 zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
-//                mre.getMessage().addReaction("U+2714").queue();
                 mre.getMessage().addReaction("U+2795").queue();
             }
 
