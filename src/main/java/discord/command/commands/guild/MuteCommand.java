@@ -40,7 +40,7 @@ public class MuteCommand extends GuildCommand {
             return true;
         }
 
-        if(splitCommand[1].length() > 4) {
+        if(splitCommand[2].length() > 4) {
             mre.getMessage().reply("wrong syntax: `" + usage + "`").mentionRepliedUser(false).queue();
             return true;
         }
