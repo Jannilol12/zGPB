@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class EmoteCommand extends GuildCommand {
 
     public EmoteCommand() {
-        super("emote", "emote <name>", "adds the emote that is attached to the corresponding message", 2);
+        super("emote", "emote <name>", "adds the emote that is attached to the corresponding message", 2, Permission.MANAGE_EMOTES);
     }
 
     @Override
