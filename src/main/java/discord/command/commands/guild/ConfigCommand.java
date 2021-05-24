@@ -17,6 +17,10 @@ public class ConfigCommand extends GuildCommand {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
+        if (splitCommand.length <= 1) {
+            return true;
+        }
+
         if (splitCommand[1].equals("show")) {
             mre.getMessage().reply(MessageCrafter.craftCodeMessage
                     ("json", zGPB.INSTANCE.guildConfigurationHandler.getGuildConfig(mre.getGuild().getIdLong()))).
@@ -27,7 +31,7 @@ public class ConfigCommand extends GuildCommand {
                 return true;
             }
 
-            if(!splitCommand[1].contains(" "))
+            if (!splitCommand[1].contains("="))
                 return true;
 
             String[] keyValueSplit = splitCommand[1].split("=");
