@@ -21,7 +21,7 @@ public class MuteCommand extends GuildCommand {
     private final static ScheduledExecutorService muteService = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
 
     public MuteCommand() {
-        super("mute", "mute <member> <time>", "mutes the given member", 3, Permission.MESSAGE_MANAGE);
+        super("mute", "mute <member> <time>", "mutes the given member", 3, Permission.ADMINISTRATOR);
     }
 
     @Override
