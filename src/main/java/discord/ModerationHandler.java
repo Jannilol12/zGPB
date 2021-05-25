@@ -1,5 +1,6 @@
 package discord;
 
+import log.Logger;
 import main.zGPB;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -9,12 +10,12 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.CharBuffer;
+import java.nio.file.Files;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ModerationHandler {
 
@@ -23,24 +24,43 @@ public class ModerationHandler {
     private Set<ModerationEntry> moderationEntries;
 
     public ModerationHandler() {
-        filterSet = new HashSet<>();
-        filterSet.add("badword");
+        loadFilterList();
+    }
 
+    public void loadFilterList() {
+        filterSet = new HashSet<>();
         moderationEntries = new HashSet<>();
+
+        // TODO: Better file system
+        File filterFolder = new File("filter" + File.separator);
+        if (filterFolder.exists()) {
+            Arrays.stream(filterFolder.listFiles()).forEach(file -> {
+                try {
+                    filterSet.addAll(Files.readAllLines(file.toPath()));
+                } catch (IOException e) {
+                    Logger.logException("Could not read filter file " + file.getAbsolutePath());
+                }
+            });
+
+        }
+
     }
 
     public boolean filterMessage(MessageReceivedEvent mre) {
         String filterList = zGPB.INSTANCE.guildConfigurationHandler.getConfigString(mre, "filter_list");
 
         if (!filterList.trim().equals("EMPTY")) {
-            boolean textEval = evaluateMessageContent(mre.getMessage());
-            if (textEval) {
+            String textEval = evaluateMessageContent(mre.getMessage());
+            if(textEval == null)
+                textEval = evaluateMessageEmbeds(mre.getMessage());
+
+            if (textEval != null) {
                 long moderationChannelID = zGPB.INSTANCE.guildConfigurationHandler.getConfigLong(mre.getGuild(), "filter_moderation_channel");
                 TextChannel moderationChannel = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(moderationChannelID);
 
                 MessageEmbed hitEmbed = new EmbedBuilder().setTitle("[Filter list] Hit").setColor(Color.RED).setThumbnail(mre.getAuthor().getAvatarUrl()).
                         addField("author", mre.getAuthor().getAsTag(), true).
-                        addField("id", mre.getMessageId(), true).
+                        addField("detected word", textEval, true).
                         addField("date", mre.getMessage().getTimeCreated().toString(), true).
                         addField("direct link", mre.getMessage().getJumpUrl(), false).
                         addField("content", mre.getMessage().getContentRaw(), false).
@@ -60,28 +80,76 @@ public class ModerationHandler {
         if (!mrae.getReactionEmote().isEmoji())
             return;
 
-        if (!mrae.getReactionEmote().getAsCodepoints().equalsIgnoreCase("U+274c"))
+        boolean isApproval = mrae.getReactionEmote().getAsCodepoints().equalsIgnoreCase("U+2705");
+
+        if (!(mrae.getReactionEmote().getAsCodepoints().equalsIgnoreCase("U+274c") || isApproval))
             return;
 
         ModerationEntry me = moderationEntries.stream().filter(entry -> entry.evalID() == mrae.getMessageIdLong()).findFirst().orElse(null);
         if (me != null) {
-            TextChannel tc = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(me.channelID);
-            if (tc != null) {
-                tc.retrieveMessageById(me.messageID).queue(message -> {
-                    message.delete().queue();
-                });
+            TextChannel tc;
+            if (!isApproval) {
+                tc = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(me.channelID);
+                if (tc != null) {
+                    tc.retrieveMessageById(me.messageID).queue(message -> {
+                        message.delete().queue();
+                    });
+                }
             }
+
+            tc = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(zGPB.INSTANCE.guildConfigurationHandler.getConfigLong(mrae.getGuild(), "filter_moderation_channel"));
+            tc.retrieveMessageById(me.evalID).queue(m -> m.delete().queue());
         }
     }
 
+    private String evaluateMessageEmbeds(Message msg) {
+        for (MessageEmbed me : msg.getEmbeds()) {
+            String wordCheck = null;
+            if (me.getDescription() != null)
+                wordCheck = evaluateString(me.getDescription());
+            if (wordCheck != null)
+                return wordCheck;
 
-    private boolean evaluateMessageContent(Message msg) {
-        boolean filterCheck;
-        String contentRaw = msg.getContentStripped().trim().replaceAll(" ", "").replaceAll(":", "").toLowerCase();
+
+            if (me.getTitle() != null)
+                wordCheck = evaluateString(me.getTitle());
+            if (wordCheck != null)
+                return wordCheck;
+
+            if (me.getFooter() != null) {
+                if (me.getFooter().getText() != null) {
+                    wordCheck = evaluateString(me.getFooter().getText());
+                    if (wordCheck != null)
+                        return wordCheck;
+                }
+            }
+
+            for (MessageEmbed.Field field : me.getFields()) {
+                wordCheck = field.getName();
+                if (wordCheck != null)
+                    return wordCheck;
+                wordCheck = field.getValue();
+                if (wordCheck != null)
+                    return wordCheck;
+            }
+
+        }
+        return null;
+    }
+
+    private String evaluateMessageContent(Message msg) {
+        return evaluateString(msg.getContentStripped());
+    }
+
+    private String evaluateString(String msg) {
+        String filterCheck;
+        String contentRaw = msg.trim().replaceAll(" ", "").replaceAll(":", "").toLowerCase();
+        contentRaw = leetSpeekReplace(contentRaw);
         contentRaw = regionalIndicatorReplace(contentRaw);
-        filterCheck = filterSet.stream().anyMatch(contentRaw::contains);
-        if (filterCheck)
-            return true;
+
+        filterCheck = filterSet.stream().filter(contentRaw::contains).findFirst().orElse(null);
+        if (filterCheck != null)
+            return filterCheck;
 
         Map<Integer, Integer> charMappings = new HashMap<>();
 
@@ -90,7 +158,7 @@ public class ModerationHandler {
             charMappings.put(i, charMappings.get(i) + 1);
         });
 
-        int maxChar = 0,  maxCount = 0;
+        int maxChar = 0, maxCount = 0;
 
         for (int ch : charMappings.keySet()) {
             if (maxCount < charMappings.get(ch)) {
@@ -99,7 +167,15 @@ public class ModerationHandler {
             }
         }
         String delimiterFix = contentRaw.replace("" + (char) maxChar, "");
-        return filterSet.stream().anyMatch(delimiterFix::contains);
+        filterCheck = filterSet.stream().filter(delimiterFix::contains).findFirst().orElse(null);
+        if (filterCheck != null)
+            return filterCheck;
+        return null;
+    }
+
+
+    private String leetSpeekReplace(String in) {
+        return in.replaceAll("0", "o").replaceAll("3", "e").replace("1", "i");
     }
 
     private String regionalIndicatorReplace(String in) {
