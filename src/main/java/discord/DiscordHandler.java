@@ -45,12 +45,7 @@ public class DiscordHandler {
 
     private void statusRotate() {
         Activity[] dictionary = new Activity[6];
-        dictionary[0] = Activity.watching("my life going downhill");
-        dictionary[1] = Activity.competing("not crashing championship");
-        dictionary[2] = Activity.playing("stay at home");
-        dictionary[3] = Activity.playing("!help");
-        dictionary[4] = Activity.playing(":(");
-        dictionary[5] = Activity.playing(":'(");
+        dictionary[0] = Activity.playing("!help");
 
         Random r = new Random();
 
