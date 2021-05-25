@@ -1,6 +1,7 @@
 .gradle/
 .idea/
 build/
+filter/
 data.db
 gradlew.bat
 config.settings
