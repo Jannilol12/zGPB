@@ -18,6 +18,11 @@ import java.util.concurrent.TimeUnit;
 public class DiscordHandler {
 
     private JDA localJDA;
+    private ModerationHandler moderationHandler;
+
+    public DiscordHandler() {
+        moderationHandler = new ModerationHandler();
+    }
 
     public void createConnection() {
         try {
@@ -54,4 +59,7 @@ public class DiscordHandler {
 
     }
 
+    public ModerationHandler getModerationHandler() {
+        return moderationHandler;
+    }
 }

@@ -19,6 +19,7 @@ public class GuildConfigurationHandler {
 
     private Map<Long, Map<String, String>> configMappings;
 
+    // TODO: Clean up unused permissions
     public GuildConfigurationHandler() {
         configMappings = new HashMap<>();
 
@@ -40,6 +41,7 @@ public class GuildConfigurationHandler {
         defaults.put("mute_enabled", "false");
         defaults.put("user_block", "");
         defaults.put("filter_list", "EMPTY");
+        defaults.put("filter_moderation_channel", "");
 
         typeMappings = new HashMap<>();
         typeMappings.put("logging_enabled", ConfigType.BOOLEAN);
@@ -59,6 +61,7 @@ public class GuildConfigurationHandler {
         typeMappings.put("mute_enabled", ConfigType.BOOLEAN);
         typeMappings.put("user_block", ConfigType.TEXT);
         typeMappings.put("filter_list", ConfigType.TEXT);
+        typeMappings.put("filter_moderation_channel", ConfigType.DISCORD_ID);
 
     }
 
