@@ -2,10 +2,7 @@ package discord.command;
 
 import discord.command.commands.*;
 import discord.command.commands.direct.RelayCommand;
-import discord.command.commands.guild.ConfigCommand;
-import discord.command.commands.guild.EmoteCommand;
-import discord.command.commands.guild.MuteCommand;
-import discord.command.commands.guild.ScanCommand;
+import discord.command.commands.guild.*;
 import log.Logger;
 import main.Util;
 import main.zGPB;
@@ -37,6 +34,7 @@ public class CommandHandler {
         commands.add(new RemindMeCommand());
         commands.add(new MuteCommand());
         commands.add(new WhoIsCommand());
+        commands.add(new ModerationCommand());
 
         Logger.logDebugMessage("Registered " + commands.size() + " commands");
     }

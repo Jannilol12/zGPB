@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.CharBuffer;
 import java.nio.file.Files;
-import java.time.Instant;
 import java.util.*;
 
 public class ModerationHandler {
@@ -41,7 +40,6 @@ public class ModerationHandler {
                     Logger.logException("Could not read filter file " + file.getAbsolutePath());
                 }
             });
-
         }
 
     }
@@ -51,21 +49,18 @@ public class ModerationHandler {
 
         if (!filterList.trim().equals("EMPTY")) {
             String textEval = evaluateMessageContent(mre.getMessage());
-            if(textEval == null)
+            if (textEval == null)
                 textEval = evaluateMessageEmbeds(mre.getMessage());
 
             if (textEval != null) {
                 long moderationChannelID = zGPB.INSTANCE.guildConfigurationHandler.getConfigLong(mre.getGuild(), "filter_moderation_channel");
                 TextChannel moderationChannel = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(moderationChannelID);
 
-                MessageEmbed hitEmbed = new EmbedBuilder().setTitle("[Filter list] Hit").setColor(Color.RED).setThumbnail(mre.getAuthor().getAvatarUrl()).
+                MessageEmbed hitEmbed = new EmbedBuilder().setColor(Color.RED).
                         addField("author", mre.getAuthor().getAsTag(), true).
                         addField("detected word", textEval, true).
-                        addField("date", mre.getMessage().getTimeCreated().toString(), true).
                         addField("direct link", mre.getMessage().getJumpUrl(), false).
-                        addField("content", mre.getMessage().getContentRaw(), false).
-                        setTimestamp(Instant.now()).build();
-
+                        addField("content", mre.getMessage().getContentRaw(), false).build();
                 moderationChannel.sendMessage(hitEmbed).queue(evalMsg -> {
                     moderationEntries.add(new ModerationEntry(mre.getMessageIdLong(), evalMsg.getIdLong(), mre.getTextChannel().getIdLong()));
                 });
@@ -141,6 +136,10 @@ public class ModerationHandler {
         return evaluateString(msg.getContentStripped());
     }
 
+    private boolean evaluateMessageAttachments(Message msg) {
+        return true;
+    }
+
     private String evaluateString(String msg) {
         String filterCheck;
         String contentRaw = msg.trim().replaceAll(" ", "").replaceAll(":", "").toLowerCase();
@@ -174,7 +173,7 @@ public class ModerationHandler {
     }
 
 
-    private String leetSpeekReplace(String in) {
+    private String leetSpeakReplace(String in) {
         return in.replaceAll("0", "o").replaceAll("3", "e").replace("1", "i");
     }
 
@@ -194,13 +193,6 @@ public class ModerationHandler {
                 .replace("\uD83C\uDDFE", "y").replace("\uD83C\uDDFF", "z");
     }
 
-    private boolean evaluateMessageAttachments(Message msg) {
-        return true;
-    }
-
-    private enum FilterType {
-        SLUR, HATESPEECH, NSFW
-    }
 
     private record ModerationEntry(long messageID, long evalID, long channelID) {
 
