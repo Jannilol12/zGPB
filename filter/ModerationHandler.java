@@ -45,12 +45,18 @@ public class ModerationHandler {
     }
 
     public boolean filterMessage(MessageReceivedEvent mre) {
+        if(!mre.isFromGuild())
+            return false;
+
         String filterList = zGPB.INSTANCE.guildConfigurationHandler.getConfigString(mre, "filter_list");
 
         if (!filterList.trim().equals("EMPTY")) {
             String textEval = evaluateMessageContent(mre.getMessage());
             if (textEval == null)
                 textEval = evaluateMessageEmbeds(mre.getMessage());
+
+            if(textEval == null)
+                textEval = evaluateMessageAttachments(mre.getMessage());
 
             if (textEval != null) {
                 long moderationChannelID = zGPB.INSTANCE.guildConfigurationHandler.getConfigLong(mre.getGuild(), "filter_moderation_channel");
@@ -63,6 +69,8 @@ public class ModerationHandler {
                         addField("content", mre.getMessage().getContentRaw(), false).build();
                 moderationChannel.sendMessage(hitEmbed).queue(evalMsg -> {
                     moderationEntries.add(new ModerationEntry(mre.getMessageIdLong(), evalMsg.getIdLong(), mre.getTextChannel().getIdLong()));
+                    evalMsg.addReaction("U+2705").queue();
+                    evalMsg.addReaction("U+274c").queue();
                 });
                 return true;
             }
@@ -72,7 +80,11 @@ public class ModerationHandler {
 
 
     public void handleMessageReaction(MessageReactionAddEvent mrae) {
+        if(!mrae.isFromGuild())
+            return;
         if (!mrae.getReactionEmote().isEmoji())
+            return;
+        if(mrae.getMember().getUser().isBot())
             return;
 
         boolean isApproval = mrae.getReactionEmote().getAsCodepoints().equalsIgnoreCase("U+2705");
@@ -103,29 +115,29 @@ public class ModerationHandler {
             if (me.getDescription() != null)
                 wordCheck = evaluateString(me.getDescription());
             if (wordCheck != null)
-                return wordCheck;
+                return "[EMBED] " + wordCheck;
 
 
             if (me.getTitle() != null)
                 wordCheck = evaluateString(me.getTitle());
             if (wordCheck != null)
-                return wordCheck;
+                return "[EMBED] " + wordCheck;
 
             if (me.getFooter() != null) {
                 if (me.getFooter().getText() != null) {
                     wordCheck = evaluateString(me.getFooter().getText());
                     if (wordCheck != null)
-                        return wordCheck;
+                        return "[EMBED] " + wordCheck;
                 }
             }
 
             for (MessageEmbed.Field field : me.getFields()) {
                 wordCheck = field.getName();
                 if (wordCheck != null)
-                    return wordCheck;
+                    return "[EMBED] " + wordCheck;
                 wordCheck = field.getValue();
                 if (wordCheck != null)
-                    return wordCheck;
+                    return "[EMBED] " + wordCheck;
             }
 
         }
@@ -136,14 +148,19 @@ public class ModerationHandler {
         return evaluateString(msg.getContentStripped());
     }
 
-    private boolean evaluateMessageAttachments(Message msg) {
-        return true;
+    private String evaluateMessageAttachments(Message msg) {
+        for (Message.Attachment ma : msg.getAttachments()) {
+            String eval = evaluateString(ma.getFileName());
+            if (eval != null)
+                return "[ATTACHMENT] " + eval;
+        }
+        return null;
     }
 
     private String evaluateString(String msg) {
         String filterCheck;
         String contentRaw = msg.trim().replaceAll(" ", "").replaceAll(":", "").toLowerCase();
-        contentRaw = leetSpeekReplace(contentRaw);
+        contentRaw = leetSpeakReplace(contentRaw);
         contentRaw = regionalIndicatorReplace(contentRaw);
 
         filterCheck = filterSet.stream().filter(contentRaw::contains).findFirst().orElse(null);
