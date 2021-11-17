@@ -6,6 +6,7 @@ import console.ConsoleHandler;
 import database.DatabaseHandler;
 import discord.DiscordHandler;
 import discord.command.CommandHandler;
+import discord.command.SlashCommandHandler;
 import external.idm.GradeManager;
 import log.Logger;
 import timing.ReminderHandler;
@@ -22,6 +23,8 @@ public class zGPB {
     public final ConsoleHandler consoleHandler;
     public final GradeManager gradeManager;
     public final ReminderHandler reminderHandler;
+
+    public SlashCommandHandler slashCommandHandler;
 
     public zGPB() {
         Logger.logDebugMessage("Reached pre init");
@@ -45,11 +48,16 @@ public class zGPB {
 
         databaseHandler.initiateDatabase();
         discordHandler.createConnection();
+
         consoleHandler.checkInput();
         gradeManager.startMonitoring();
 
         Logger.logDebugMessage("Reached post init");
         reminderHandler.registerOldReminders();
+    }
+
+    public void onReadyCallback() {
+        slashCommandHandler = new SlashCommandHandler();
     }
 
     private void shutdown() {

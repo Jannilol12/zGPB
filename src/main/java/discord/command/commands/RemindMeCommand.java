@@ -2,12 +2,13 @@ package discord.command.commands;
 
 import database.DataHandler;
 import discord.command.Command;
-import main.Util;
+import main.DateUtil;
 import main.zGPB;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import timing.Event;
 
-import java.time.*;
+import java.time.ZonedDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RemindMeCommand extends Command {
 
@@ -53,71 +54,18 @@ public class RemindMeCommand extends Command {
             }
         }
 
-        // TODO: 12/04/2021 deduplicate
-        // TODO: 15/04/2021 check substrings
-        if (String.valueOf(splitCommand[1].charAt(splitCommand[1].length() - 1)).matches("[yMwdhms]")) {
-            ZonedDateTime remindTime = Util.getTimeAdded(splitCommand[1]);
+        ZonedDateTime remindTime = DateUtil.getAdjustedDateByInput(splitCommand[1]);
 
-            if (remindTime == null) {
-                mre.getMessage().reply("unknown format").mentionRepliedUser(false).queue();
-                return true;
-            }
-
-            Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
-
-            DataHandler.saveReminder(remindEvent);
-            mre.getMessage().addReaction("U+2795").queue();
-            zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
-        } else {
-            LocalDate date = null;
-            LocalTime time = null;
-
-            if (splitCommand[1].contains(".")) {
-                String[] timedate = splitCommand[1].split("\\.");
-
-                try {
-                    date = LocalDate.parse(timedate[0]);
-                    time = LocalTime.parse(timedate[1]);
-                } catch (Exception e) {
-                    mre.getMessage().reply("couldn't parse datetime").mentionRepliedUser(false).queue();
-                    return true;
-                }
-
-            } else {
-                if (splitCommand[1].contains("-")) {
-                    try {
-                        date = LocalDate.parse(splitCommand[1]);
-                    } catch (Exception e) {
-                        mre.getMessage().reply("couldn't parse date").mentionRepliedUser(false).queue();
-                        return true;
-                    }
-                } else {
-                    try {
-                        time = LocalTime.parse(splitCommand[1]);
-                    } catch (Exception e) {
-                        mre.getMessage().reply("couldn't parse time").mentionRepliedUser(false).queue();
-                        return true;
-                    }
-                }
-            }
-
-            ZonedDateTime remindTime = null;
-            if (date != null && time != null) {
-                remindTime = ZonedDateTime.of(LocalDateTime.of(date, time), ZoneId.systemDefault());
-            } else if (date != null) {
-                remindTime = date.atStartOfDay(ZoneId.systemDefault());
-            } else if (time != null) {
-                remindTime = time.atDate(LocalDate.now()).atZone(ZoneId.systemDefault());
-            }
-
-            if (remindTime != null) {
-                Event remindEvent = new Event(mre.getChannel().getIdLong(), mre.getMessageIdLong(), remindTime, content);
-                DataHandler.saveReminder(remindEvent);
-                zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
-                mre.getMessage().addReaction("U+2795").queue();
-            }
-
+        if (remindTime == null) {
+            mre.getMessage().reply("could not parse date/time format :(").mentionRepliedUser(true).queue();
+            return true;
         }
+
+        Event remindEvent = new Event(ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE),
+                mre.getChannel().getIdLong(), mre.getMessageIdLong(), mre.getAuthor().getIdLong(), remindTime, content);
+        DataHandler.saveReminder(remindEvent);
+        zGPB.INSTANCE.reminderHandler.remindMessage(remindEvent);
+        mre.getMessage().addReaction("U+2795").queue();
 
         return true;
     }

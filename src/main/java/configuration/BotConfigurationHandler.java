@@ -25,6 +25,10 @@ public class BotConfigurationHandler {
         defaults.setProperty("zGPB_idm_refresh", "10");
         defaults.setProperty("zGPB_dict_api", "https://api.urbandictionary.com/v0/define?term=[X]");
         defaults.setProperty("zGPB_dict_main", "https://www.urbandictionary.com/define.php?term=[X]");
+        defaults.setProperty("zGPB_sql_database", "");
+        defaults.setProperty("zGPB_sql_user", "");
+        defaults.setProperty("zGPB_sql_password", "");
+
 
         config = new Properties();
         configFile = new File("config.settings");

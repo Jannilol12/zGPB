@@ -64,7 +64,7 @@ public class DateUtil {
     private DateUtil() {
     }
 
-    public static String determineDateFormat(String str) {
+    private static String determineDateFormat(String str) {
         for (String regExp : dateMappings.keySet()) {
             if (str.matches(regExp))
                 return dateMappings.get(regExp);
@@ -73,7 +73,15 @@ public class DateUtil {
         return null;
     }
 
-    public static ZonedDateTime getDateByInput(String rawInput) {
+    public static ZonedDateTime getAdjustedDateByInput(String raw) {
+        if (String.valueOf(raw.charAt(raw.length() - 1)).matches("[yMwdhms]")) {
+            return getTimeAdded(raw);
+        } else {
+            return getDateByInput(raw);
+        }
+    }
+
+    private static ZonedDateTime getDateByInput(String rawInput) {
         String filteredInput = rawInput.trim().toLowerCase(Locale.ROOT);
 
         String dateFormat = determineDateFormat(filteredInput);
@@ -94,11 +102,37 @@ public class DateUtil {
         } catch (DateTimeParseException ignored) {
         }
 
+        if (localTime == null)
+            localTime = LocalTime.now(ZoneId.systemDefault());
 
-        if (localTime == null && localDate == null)
-            return null;
+        if (localDate == null) {
+            localDate = LocalDate.now(ZoneId.systemDefault());
 
-        return ZonedDateTime.of(localDate == null ? LocalDate.now(ZoneId.systemDefault()) : localDate,
-                localTime == null ? LocalTime.now(ZoneId.systemDefault()) : localTime, ZoneId.systemDefault());
+            if (localTime.isBefore(LocalTime.now()))
+                localDate = localDate.plusDays(1);
+        }
+
+
+        return ZonedDateTime.of(localDate, localTime, ZoneId.systemDefault());
     }
+
+    public static ZonedDateTime getTimeAdded(String time) {
+        char unit = time.charAt(time.length() - 1);
+        long cleanTime = Long.parseLong(time.replace(unit + "", ""));
+        ZonedDateTime resultTime = ZonedDateTime.now();
+        switch (time.substring(time.length() - 1).charAt(0)) {
+            case 'y' -> resultTime = resultTime.plusYears(cleanTime);
+            case 'M' -> resultTime = resultTime.plusMonths(cleanTime);
+            case 'w' -> resultTime = resultTime.plusWeeks(cleanTime);
+            case 'd' -> resultTime = resultTime.plusDays(cleanTime);
+            case 'h' -> resultTime = resultTime.plusHours(cleanTime);
+            case 'm' -> resultTime = resultTime.plusMinutes(cleanTime);
+            case 's' -> resultTime = resultTime.plusSeconds(cleanTime);
+            default -> {
+                return null;
+            }
+        }
+        return resultTime;
+    }
+
 }

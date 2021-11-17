@@ -1,7 +1,9 @@
 package discord;
 
+import discord.listeners.GeneralListener;
 import discord.listeners.GuildListener;
 import discord.listeners.MessageListener;
+import discord.listeners.SlashCommandListener;
 import log.Logger;
 import main.zGPB;
 import net.dv8tion.jda.api.JDA;
@@ -18,16 +20,16 @@ public class DiscordHandler {
     public void createConnection() {
         try {
             localJDA = JDABuilder.createDefault(zGPB.INSTANCE.botConfigurationHandler.getConfigValue("zGPB_token"))
-                    .addEventListeners(new MessageListener(), new GuildListener())
+                    .addEventListeners(new MessageListener(), new GuildListener(), new SlashCommandListener(), new GeneralListener())
                     .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_VOICE_STATES)
                     .build();
-            statusRotate();
         } catch (LoginException e) {
             Logger.logException(e);
         }
 
-        Logger.logDebugMessage("Logging in as " + localJDA.getSelfUser().getAsTag());
+        statusRotate();
 
+        Logger.logDebugMessage("Logging in as " + localJDA.getSelfUser().getAsTag());
     }
 
     public JDA getLocalJDA() {

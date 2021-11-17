@@ -2,13 +2,15 @@ package timing;
 
 import java.time.ZonedDateTime;
 
-public record Event(long channelID, long messageID, ZonedDateTime time, String content) {
+public record Event(long id, long channelID, long messageID, long userID, ZonedDateTime time, String content) {
 
     @Override
     public String toString() {
         return "Event{" +
-               "channelID=" + channelID +
+               "id=" + id +
+               ",channelID=" + channelID +
                ", messageID=" + messageID +
+               ", userID=" + userID +
                ", time=" + time +
                ", content='" + content + '\'' +
                '}';

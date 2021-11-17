@@ -33,11 +33,16 @@ public class ReminderHandler {
         runTaskAtDateTime(remindEvent.time(), () -> {
             MessageChannel tc = zGPB.INSTANCE.discordHandler.getLocalJDA().getTextChannelById(remindEvent.channelID());
 
-            tc.retrieveMessageById(remindEvent.messageID()).queue(m -> sendReminderWithReference(m, remindEvent), new ErrorHandler().handle(
-                    ErrorResponse.UNKNOWN_MESSAGE, (e) -> {
-                        sendReminderWithoutReference(tc, DataHandler.getUserByMessage(remindEvent.messageID()), remindEvent);
-                    }
-            ));
+            if(remindEvent.messageID() == -1) {
+                sendReminderWithoutReference(tc, remindEvent);
+            } else {
+                tc.retrieveMessageById(remindEvent.messageID()).queue(m -> sendReminderWithReference(m, remindEvent), new ErrorHandler().handle(
+                        ErrorResponse.UNKNOWN_MESSAGE, (e) -> {
+                            sendReminderWithoutReference(tc,  remindEvent);
+                        }
+                ));
+            }
+
 
             DataHandler.removeReminder(remindEvent);
         });
@@ -65,14 +70,14 @@ public class ReminderHandler {
         }
     }
 
-    private void sendReminderWithoutReference(MessageChannel mc, long user, Event e) {
-        if (user != -1) {
+    private void sendReminderWithoutReference(MessageChannel mc, Event e) {
+        if (e.userID() != -1) {
             if (mc instanceof TextChannel tc) {
                 if (tc.canTalk()) {
-                    mc.sendMessage("<@" + user + "> here is your reminder" + (e.content().trim().isEmpty() ? "" : "[" + e.content() + "]")).queue();
+                    mc.sendMessage("<@" + e.userID() + "> here is your reminder" + (e.content().trim().isEmpty() ? "" : "[" + e.content() + "]")).queue();
                 }
             } else {
-                mc.sendMessage("<@" + user + "> here is your reminder" + (e.content().trim().isEmpty() ? "" : "[" + e.content() + "]")).queue();
+                mc.sendMessage("<@" + e.userID() + "> here is your reminder" + (e.content().trim().isEmpty() ? "" : "[" + e.content() + "]")).queue();
             }
         } else {
             System.err.println("hello " + e);
