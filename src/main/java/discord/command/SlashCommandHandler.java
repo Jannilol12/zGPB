@@ -20,7 +20,7 @@ public class SlashCommandHandler {
         commands.add(new RemindMeSlashCommand());
 
         for(SlashCommand slashCommand : commands) {
-            zGPB.INSTANCE.discordHandler.getLocalJDA().getGuildById(814890317538394152L).upsertCommand(slashCommand.getAsCommandData()).queue();
+            zGPB.INSTANCE.discordHandler.getLocalJDA().getGuildById(765192487227883530L).upsertCommand(slashCommand.getAsCommandData()).queue();
         }
     }
 

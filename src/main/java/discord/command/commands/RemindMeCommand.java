@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RemindMeCommand extends Command {
 
     public RemindMeCommand() {
-        super("remindme", "remindme <x (y/M/w/d/h/m/s) / yyyy-MM-dd.hh:mm:ss> [text]", "reminds you at the given time with the given text", 2);
+        super("remindme", "remindme <x (y/M/w/d/h/m/s) / yyyy-MM-dd.hh:mm:ss> [text]", "reminds you at the given time with the given text", 2, "rm");
     }
 
     @Override
