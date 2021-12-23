@@ -3,6 +3,7 @@ package discord.command.slashcommands;
 import database.DataHandler;
 import discord.command.SlashCommand;
 import main.DateUtil;
+import main.Util;
 import main.zGPB;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -10,13 +11,12 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import timing.Event;
 
 import java.time.ZonedDateTime;
-import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RemindMeSlashCommand extends SlashCommand {
 
     public RemindMeSlashCommand() {
-        super("remindme", "creates a reminder", Set.of(
+        super("remindme", "creates a reminder", Util.of(
                 new OptionData(OptionType.STRING, "time", "the time you will be reminded on", true),
                 new OptionData(OptionType.STRING, "content", "what you want to be reminded of", false)
         ));

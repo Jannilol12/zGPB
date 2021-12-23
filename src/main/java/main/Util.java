@@ -4,6 +4,8 @@ import discord.command.Command;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Util {
@@ -84,6 +86,10 @@ public final class Util {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    public static <T>LinkedHashSet<T> of(T... elem) {
+        return new LinkedHashSet<T>(List.of(elem));
     }
 
 }
