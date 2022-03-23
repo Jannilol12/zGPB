@@ -42,6 +42,7 @@ public class GuildConfigurationHandler {
         defaults.put("user_block", "");
         defaults.put("filter_list", "EMPTY");
         defaults.put("filter_moderation_channel", "");
+        defaults.put("join_role", "");
 
         typeMappings = new HashMap<>();
         typeMappings.put("logging_enabled", ConfigType.BOOLEAN);
@@ -62,6 +63,7 @@ public class GuildConfigurationHandler {
         typeMappings.put("user_block", ConfigType.TEXT);
         typeMappings.put("filter_list", ConfigType.TEXT);
         typeMappings.put("filter_moderation_channel", ConfigType.DISCORD_ID);
+        typeMappings.put("join_role", ConfigType.TEXT);
 
     }
 
