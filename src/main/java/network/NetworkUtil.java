@@ -143,7 +143,7 @@ public class NetworkUtil {
         return null;
     }
 
-    // this is by no means a exhaustive list, just enough to work
+    // this is by no means an exhaustive list, just enough to work
     public static String transformToHTMLString(String in) {
         return in.replaceAll("\\+", "%2B").replaceAll("=", "%3D").
                 replaceAll(":", "%3A").replaceAll(" ", "%20");
