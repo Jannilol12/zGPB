@@ -32,6 +32,7 @@ test {
     }
 }
 
+/*
 jar {
     manifest {
         attributes("Main-Class": "main.zGPB")
@@ -42,4 +43,4 @@ jar {
             it.isDirectory() ? it : zipTree(it)
         }
     }
-}
+}*/
