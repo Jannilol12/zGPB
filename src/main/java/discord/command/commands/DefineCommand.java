@@ -26,11 +26,12 @@ public class DefineCommand extends Command {
             return true;
         }
 
-        DictionaryEntry highest = DictionaryManager.getDefinitionForWord(givenCommand.split(" ", 2)[1]);
+        final String searchTerm = givenCommand.split(" ", 2)[1];
+        DictionaryEntry highest = DictionaryManager.getDefinitionForWord(searchTerm);
         if (highest == null) {
             mre.getMessage().reply("couldn't resolve the given term").mentionRepliedUser(false).queue();
         } else {
-            mre.getMessage().reply(MessageCrafter.craftGenericEmbedMessage("definition for __" + splitCommand[1] + "__ from *" + highest.author() + "*",
+            mre.getMessage().reply(MessageCrafter.craftGenericEmbedMessage("definition for __" + searchTerm + "__ from *" + highest.author() + "*",
                     new EmbedField("definition", highest.definition(), false),
                     new EmbedField("example", highest.example(), false),
                     new EmbedField("thumbs up", highest.thumbsUp() + "", true),
