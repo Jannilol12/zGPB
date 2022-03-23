@@ -8,18 +8,19 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import timing.Event;
 
 import java.time.ZonedDateTime;
+import java.util.StringJoiner;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class RemindMeCommand extends Command {
 
     public RemindMeCommand() {
-        super("remindme", "remindme <x (y/M/w/d/h/m/s) / yyyy-MM-dd.hh:mm:ss> [text]", "reminds you at the given time with the given text", 2, "rm");
+        super("remindme", "remindme <x (y/M/w/d/h/m/s) / any date format you wish for> <text>", "reminds you at the given time with the given text", 2, "rm");
     }
 
     @Override
     protected boolean isSyntaxCorrect(String command) {
-        int l = command.split(" ", 3).length;
-        return l > 1 && l <= 3;
+        int l = command.split(" ").length;
+        return l > 2;
     }
 
     @Override
@@ -27,16 +28,14 @@ public class RemindMeCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        if (splitCommand[1].length() < 2) {
-            mre.getMessage().reply("couldn't parse format").mentionRepliedUser(false).queue();
-            return true;
+        String timeString = splitCommand[1];
+
+
+        if (!DateUtil.isDynamicTimeString(splitCommand[1])) {
+            timeString = getDateString(givenCommand.split(" "));
         }
 
-        String content = "";
-        if (splitCommand.length >= 3) {
-            splitCommand = givenCommand.split(" ", 3);
-            content = splitCommand[2];
-        }
+        String content = splitCommand[splitCommand.length - 1];
         if (content.length() >= 1000) {
             mre.getMessage().reply("content too long").mentionRepliedUser(false).queue();
             return true;
@@ -54,7 +53,7 @@ public class RemindMeCommand extends Command {
             }
         }
 
-        ZonedDateTime remindTime = DateUtil.getAdjustedDateByInput(splitCommand[1]);
+        ZonedDateTime remindTime = DateUtil.getAdjustedDateByInput(timeString);
 
         if (remindTime == null) {
             mre.getMessage().reply("could not parse date/time format :(").mentionRepliedUser(true).queue();
@@ -69,4 +68,19 @@ public class RemindMeCommand extends Command {
 
         return true;
     }
+
+    private String getDateString(String[] input) {
+        StringJoiner sb = new StringJoiner(" ");
+
+        for (String subString : input) {
+            if (subString.equals("remindme"))
+                continue;
+            if (!subString.chars().allMatch(c -> Character.isDigit(c) || c == ':'))
+                break;
+            sb.add(subString);
+        }
+
+        return sb.toString().stripTrailing();
+    }
+
 }

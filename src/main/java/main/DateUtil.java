@@ -24,6 +24,7 @@ public class DateUtil {
         put("^\\d{1,2}/\\d{1,2}/\\d{4}$", "d/M/y");
         put("^\\d{4}/\\d{1,2}/\\d{1,2}$", "y/M/d");
 
+        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}$", "d MM y");
         put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}$", "d MMM y");
         put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}$", "d MMMM y");
 
@@ -39,6 +40,7 @@ public class DateUtil {
         put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d/M/y H:m");
         put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "y/M/d H:m");
 
+        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d MMM y H:m");
         put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d MMM y H:m");
         put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d MMMM y H:m");
 
@@ -54,6 +56,7 @@ public class DateUtil {
         put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d/M/y H:m:s");
         put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "y/M/d H:m:s");
 
+        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d MMM y H:m:s");
         put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d MMM y H:m:s");
         put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d MMMM y H:m:s");
 
@@ -73,8 +76,15 @@ public class DateUtil {
         return null;
     }
 
+    public static boolean isDynamicTimeString(String in) {
+        if (in.length() < 2)
+            return false;
+        return String.valueOf(in.charAt(in.length() - 1)).matches("[yMwdhms]");
+    }
+
     public static ZonedDateTime getAdjustedDateByInput(String raw) {
-        if (String.valueOf(raw.charAt(raw.length() - 1)).matches("[yMwdhms]")) {
+        System.out.println(raw);
+        if (isDynamicTimeString(raw)) {
             return getTimeAdded(raw);
         } else {
             return getDateByInput(raw);
