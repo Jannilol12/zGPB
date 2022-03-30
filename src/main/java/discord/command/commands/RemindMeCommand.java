@@ -28,14 +28,14 @@ public class RemindMeCommand extends Command {
         if (!super.onCommand(mre, givenCommand, splitCommand))
             return false;
 
-        String timeString = splitCommand[1];
+        boolean isDynamic = DateUtil.isDynamicTimeString(splitCommand[1]);
 
+        String timeString = extractDateString(givenCommand.split(" "));
+        String[] posContent = givenCommand.split(timeString);
+        String content;
+        if (isDynamic && splitCommand.length >= 3) content = splitCommand[2];
+        else content = posContent.length > 1 ? posContent[1] : "here is your reminder";
 
-        if (!DateUtil.isDynamicTimeString(splitCommand[1])) {
-            timeString = getDateString(givenCommand.split(" "));
-        }
-
-        String content = splitCommand[splitCommand.length - 1];
         if (content.length() >= 1000) {
             mre.getMessage().reply("content too long").mentionRepliedUser(false).queue();
             return true;
@@ -53,7 +53,12 @@ public class RemindMeCommand extends Command {
             }
         }
 
-        ZonedDateTime remindTime = DateUtil.getAdjustedDateByInput(timeString);
+        ZonedDateTime remindTime;
+        if (isDynamic)
+            remindTime = DateUtil.getAdjustedDateByInputPreChecked(splitCommand[1], true);
+        else
+            remindTime = DateUtil.getAdjustedDateByInputPreChecked(timeString, false);
+
 
         if (remindTime == null) {
             mre.getMessage().reply("could not parse date/time format :(").mentionRepliedUser(true).queue();
@@ -69,18 +74,18 @@ public class RemindMeCommand extends Command {
         return true;
     }
 
-    private String getDateString(String[] input) {
-        StringJoiner sb = new StringJoiner(" ");
-
-        for (String subString : input) {
-            if (subString.equals("remindme"))
-                continue;
-            if (!subString.chars().allMatch(c -> Character.isDigit(c) || c == ':'))
+    private String extractDateString(String[] input) {
+        StringJoiner sj = new StringJoiner(" ");
+        for (int i = 1; i < input.length; i++) {
+            if (!input[i].chars().allMatch(this::IsTimeChar))
                 break;
-            sb.add(subString);
+            sj.add(input[i]);
         }
+        return sj.toString().strip();
+    }
 
-        return sb.toString().stripTrailing();
+    private boolean IsTimeChar(int codePoint) {
+        return (codePoint >= '.' && codePoint <= ':');
     }
 
 }

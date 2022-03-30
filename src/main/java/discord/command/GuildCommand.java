@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Arrays;
 import java.util.EnumSet;
 
+@Deprecated
 public abstract class GuildCommand extends Command {
 
     private final EnumSet<Permission> permissions;

@@ -1,5 +1,6 @@
 package discord.command;
 
+@Deprecated
 public abstract class PrivateCommand extends Command {
 
     public PrivateCommand(String name, String usage, String description, int argCount, String... aliases) {

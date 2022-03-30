@@ -12,65 +12,64 @@ import java.util.Map;
 
 public class DateUtil {
 
-    private static final Map<String, String> dateMappings = new HashMap<>() {{
+    private static final Map<String, String> DATE_FORMAT_MAPPINGS = new HashMap<>() {{
+        put("^\\d{1,2}.\\d{1,2}$", "d.M");
+        put("^\\d{1,2}:\\d{1,2}$", "H:m");
+
         put("^\\d{8}$", "yyyyMMdd");
-
-        put("^\\d{1,2}-\\d{1,2}-\\d{4}$", "d-M-y");
-        put("^\\d{4}-\\d{1,2}-\\d{1,2}$", "y-M-d");
-
-        put("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}$", "d.M.y");
-        put("^\\d{4}\\.\\d{1,2}\\.\\d{1,2}$", "y.M.d");
-
-        put("^\\d{1,2}/\\d{1,2}/\\d{4}$", "d/M/y");
-        put("^\\d{4}/\\d{1,2}/\\d{1,2}$", "y/M/d");
-
-        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}$", "d MM y");
-        put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}$", "d MMM y");
-        put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}$", "d MMMM y");
 
         put("^\\d{12}$", "yyyyMMddHHmm");
         put("^\\d{8}\\s\\d{4}$", "yyyyMMdd HHmm");
 
-        put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d-M-y H:m");
-        put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "y-M-d H:m");
-
-        put("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d.M.y H:m");
-        put("^\\d{4}\\.\\d{1,2}\\.\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "y.M.d H:m");
-
-        put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d/M/y H:m");
-        put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "y/M/d H:m");
-
-        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d MMM y H:m");
-        put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d MMM y H:m");
-        put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d MMMM y H:m");
-
         put("^\\d{14}$", "yyyyMMddHHmmss");
         put("^\\d{8}\\s\\d{6}$", "yyyyMMdd HHmmss");
+
+
+        put("^\\d{1,2}-\\d{1,2}-\\d{4}$", "d-M-y");
+        put("^\\d{4}-\\d{1,2}-\\d{1,2}$", "y-M-d");
+
+
+        put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d-M-y H:m");
+        put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "y-M-d H:m");
 
         put("^\\d{1,2}-\\d{1,2}-\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d-M-y H:m:s");
         put("^\\d{4}-\\d{1,2}-\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "y-M-d H:m:s");
 
+
+        put("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}$", "d.M.y");
+        put("^\\d{4}\\.\\d{1,2}\\.\\d{1,2}$", "y.M.d");
+
+        put("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d.M.y H:m");
+        put("^\\d{4}\\.\\d{1,2}\\.\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "y.M.d H:m");
+
         put("^\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d.M.y H:m:s");
         put("^\\d{4}\\.\\d{1,2}\\.\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "y.M.d H:m:s");
+
+
+        put("^\\d{1,2}/\\d{1,2}/\\d{4}$", "d/M/y");
+        put("^\\d{4}/\\d{1,2}/\\d{1,2}$", "y/M/d");
+
+        put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d/M/y H:m");
+        put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{1,2}$", "y/M/d H:m");
 
         put("^\\d{1,2}/\\d{1,2}/\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d/M/y H:m:s");
         put("^\\d{4}/\\d{1,2}/\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "y/M/d H:m:s");
 
-        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d MMM y H:m:s");
-        put("^\\d{1,2}\\s[a-z]{3}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d MMM y H:m:s");
-        put("^\\d{1,2}\\s[a-z]{4,}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d MMMM y H:m:s");
 
-        put("^\\d{1,2}.\\d{1,2}$", "d.M");
-        put("^\\d{1,2}:\\d{1,2}$", "H:m");
+        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}$", "d M y");
+
+        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}$", "d M y H:m");
+
+        put("^\\d{1,2}\\s\\d{1,2}\\s\\d{4}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$", "d M y H:m:s");
     }};
 
     private DateUtil() {
     }
 
     private static String determineDateFormat(String str) {
-        for (String regExp : dateMappings.keySet()) {
+        for (String regExp : DATE_FORMAT_MAPPINGS.keySet()) {
             if (str.matches(regExp))
-                return dateMappings.get(regExp);
+                return DATE_FORMAT_MAPPINGS.get(regExp);
         }
 
         return null;
@@ -83,8 +82,15 @@ public class DateUtil {
     }
 
     public static ZonedDateTime getAdjustedDateByInput(String raw) {
-        System.out.println(raw);
         if (isDynamicTimeString(raw)) {
+            return getTimeAdded(raw);
+        } else {
+            return getDateByInput(raw);
+        }
+    }
+
+    public static ZonedDateTime getAdjustedDateByInputPreChecked(String raw, boolean pre) {
+        if (pre) {
             return getTimeAdded(raw);
         } else {
             return getDateByInput(raw);
@@ -98,6 +104,7 @@ public class DateUtil {
         if (dateFormat == null)
             return null;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(dateFormat);
+
 
         LocalDate localDate = null;
         LocalTime localTime = null;
@@ -121,7 +128,6 @@ public class DateUtil {
             if (localTime.isBefore(LocalTime.now()))
                 localDate = localDate.plusDays(1);
         }
-
 
         return ZonedDateTime.of(localDate, localTime, ZoneId.systemDefault());
     }

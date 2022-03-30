@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Arrays;
 import java.util.HashSet;
 
+@Deprecated
 public abstract class Command {
 
     protected String name, usage, description;

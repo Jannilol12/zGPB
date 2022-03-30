@@ -87,6 +87,7 @@ public final class Util {
         return hexString.toString();
     }
 
+    @SafeVarargs
     public static <T> LinkedHashSet<T> of(T... elem) {
         return new LinkedHashSet<T>(List.of(elem));
     }
