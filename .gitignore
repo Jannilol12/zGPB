@@ -5,3 +5,8 @@ filter/
 data.db
 gradlew.bat
 config.settings
+
+src/main/java/database/DataHandler.java
+src/main/java/database/DatabaseHandler.java
+src/main/java/discord/command/commands/guild/ScanCommand.java
+src/main/java/discord/listeners/MessageListener.java
