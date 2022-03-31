@@ -15,9 +15,16 @@ Note: *environment variables take priority over file settings*
 
 Building from source:
 ```
+gradle build
+```
+
+Bundling the jar (with dependencies):
+```
 gradle shadowJar
 ```
-Execute the generate jar in build/libs afterwards, somewhat like this:
-`java -jar build/libs/zGPB-[CURRENT_VERSION].jar [--enable-preview]`
+
+
+Execute the generated jar in build/libs afterwards, somewhat like this:
+`java -jar build/libs/zGPB-[CURRENT_VERSION]-all.jar [--enable-preview]`
 
 `CURRENT_VERSION` refers to 1.2, 1.3, ...
