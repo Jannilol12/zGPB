@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RemindMeCommand extends Command {
 
     public RemindMeCommand() {
-        super("remindme", "remindme <x (y/M/w/d/h/m/s) / any date format you wish for> <text>", "reminds you at the given time with the given text", 2, "rm");
+        super("remindme", "remindme <x (y/M/w/d/h/m/s) / any date format you wish for> <text> / e.g. '!rm 01.01.1970 00:00 <text>'", "reminds you at the given time with the given text", 2, "rm");
     }
 
     @Override
